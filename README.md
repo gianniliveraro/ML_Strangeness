@@ -7,7 +7,7 @@ This repository aims to store codes for processing/analyses of derived data insi
    
 1. Clone this repository in a local machine:
 
-      git clone ...
+      git clone https://github.com/gianniliveraro/ML_Strangeness.git
 
 2. Navigate to the top level of the repository and run:
      ./install/instal_mlenv.sh
