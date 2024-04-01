@@ -84,7 +84,7 @@ o2physics_add_dpl_workflow(mlstrangetest
                     PUBLIC_LINK_LIBRARIES O2Physics::AnalysisCore O2Physics::MLCore
                     COMPONENT_NAME Analysis)
 
-o2physics_add_dpl_workflow(sigmaanalysisv2
-                    SOURCES sigmaanalysisv2.cxx
+o2physics_add_dpl_workflow(sigmaanalysis
+                    SOURCES sigmaanalysis.cxx
                     PUBLIC_LINK_LIBRARIES O2Physics::AnalysisCore
                     COMPONENT_NAME Analysis)

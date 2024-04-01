@@ -49,7 +49,7 @@ using std::cout;
 using std::endl;
 using dauTracks = soa::Join<aod::DauTrackExtras, aod::DauTrackTPCPIDs>;
 
-struct sigmaanalysisv2{
+struct sigmaanalysis{
   HistogramRegistry histos{"Histos", {}, OutputObjHandlingPolicy::AnalysisObject};
 
   // master analysis switches
@@ -295,13 +295,13 @@ struct sigmaanalysisv2{
     histos.fill(HIST("hNSigmaCandidates"), SigmaCounter);
   }
 
-  PROCESS_SWITCH(sigmaanalysisv2, processCounterQA, "Check standard counter correctness", true);
-  PROCESS_SWITCH(sigmaanalysisv2, processMonteCarlo, "Do Monte-Carlo-based analysis", true);
-  PROCESS_SWITCH(sigmaanalysisv2, processRealData, "Do real data analysis", true);
+  PROCESS_SWITCH(sigmaanalysis, processCounterQA, "Check standard counter correctness", true);
+  PROCESS_SWITCH(sigmaanalysis, processMonteCarlo, "Do Monte-Carlo-based analysis", true);
+  PROCESS_SWITCH(sigmaanalysis, processRealData, "Do real data analysis", true);
 };
 
 WorkflowSpec defineDataProcessing(ConfigContext const& cfgc)
 {
-  return WorkflowSpec{adaptAnalysisTask<sigmaanalysisv2>(cfgc)};
+  return WorkflowSpec{adaptAnalysisTask<sigmaanalysis>(cfgc)};
   
 }
