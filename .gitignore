@@ -1,0 +1,5 @@
+Dataset/Raw/*.root
+Dataset/Interim/*.root
+Dataset/Interim/*.parquat
+Dataset/Processed/*.root
+Dataset/Processed/*.parquat
