@@ -15,7 +15,9 @@ git clone https://github.com/gianniliveraro/ML_Strangeness.git
 ``` 
 this creates an environment (called "ML_Env") with miniconda to run python codes for ML analysis. 
 
-3. Activate the ML_Env environment with:
+3. Log out from your account and log in again. 
+
+4. Activate the ML_Env environment with:
 ```c
      conda activate ML_Env
 ``` 
