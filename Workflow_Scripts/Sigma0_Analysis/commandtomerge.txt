@@ -1,0 +1,1 @@
+o2-aod-merger --input ao2dstomerge.txt --output AO2D_merged.root
