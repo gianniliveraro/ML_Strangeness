@@ -50,5 +50,5 @@ source $HOME/.bashrc
 conda update -n base -c defaults conda  #Update conda
 
 
-conda env create -f $BASEDIR/src/ML_Env.yaml
+conda env create -f $BASEDIR/src/ML_Env.yml
 echo "conda activate ML_Env" >> $HOME/.bashrc
