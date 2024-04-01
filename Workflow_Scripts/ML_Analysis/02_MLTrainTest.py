@@ -44,7 +44,7 @@ t0 = time.time() # Initial time
 
 ##----------------------- PATHS AND LOADING SETTINGS----------------------------
 MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
-RESULTS_PATH = MAIN_PATH + 'Workflow_Scrips/ML_Analysis/Results/'
+RESULTS_PATH = MAIN_PATH + 'Workflow_Scripts/ML_Analysis/Results/'
 
 print('Which ML Run would you like to load?. Available Runs: \n', os.listdir(RESULTS_PATH))
 RunNumber = str (input())
@@ -59,13 +59,13 @@ FeaturesToTrain = RunConfig['Dataset']['Features']
 Class_name = RunConfig['Dataset']['Class']
 
 # Loading train test
-DatasetTrain = pd.read_parquet(MAIN_PATH+'Dataset/{}_Train.parquet'.format(DatasetName))
+DatasetTrain = pd.read_parquet(MAIN_PATH+'Dataset/Processed/{}_Train.parquet'.format(DatasetName))
 X_train = DatasetTrain[FeaturesToTrain]
 y_train = DatasetTrain[[Class_name]]
 #BDtClassweight = len(classes[classes.Class==0])/len(classes[classes.Class==1]) # to balance classes
 
 # Loading test test
-DatasetTest = pd.read_parquet(MAIN_PATH+'Dataset/{}_Test.parquet'.format(DatasetName))
+DatasetTest = pd.read_parquet(MAIN_PATH+'Dataset/Processed/{}_Test.parquet'.format(DatasetName))
 X_test = DatasetTest[FeaturesToTrain]
 y_test = DatasetTest[[Class_name]]
 

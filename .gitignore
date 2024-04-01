@@ -1,5 +1,6 @@
 Dataset/Raw/*.root
 Dataset/Interim/*.root
-Dataset/Interim/*.parquat
+Dataset/Interim/*.parquet
 Dataset/Processed/*.root
-Dataset/Processed/*.parquat
+Dataset/Processed/*.parquet
+Workflow_Scripts/ML_Analysis/Results/

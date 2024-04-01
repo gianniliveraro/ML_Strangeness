@@ -14,6 +14,8 @@
 #
 # This code finds the best set of hyperparameters of a BDT model
 #
+# TODO: use a validation set for hyperparameter tuning!!
+#
 #    Comments, questions, complaints, suggestions?
 #    Please write to:
 #    gianni.shigeru.setoue.liveraro@cern.ch
@@ -42,17 +44,18 @@ t0 = time.time() # Initial time
 fUseOptuna = True # if False uses GridSearchCV for hyperparameters search
 fUseOptunawithCV = False # if True uses k-fold cross validation with optuna
 fCreateNewrun = True # if True, creates a directory in 'ML_Strangeness/Workflow_Scrips/ML_Analysis/Results/' to save ML run configurations and results 
+NOptunaTrials = 50 # number of Optuna trials
 
 # Please, include a short description of this Run:
 RunDescription = "Test run of the ML workflow with Lambdas"
 
 ##--------------------------------- PATHS ------------------------------------
 MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
-RESULTS_PATH = MAIN_PATH + 'Workflow_Scrips/ML_Analysis/Results/'
+RESULTS_PATH = MAIN_PATH + 'Workflow_Scripts/ML_Analysis/Results/'
 os.makedirs(RESULTS_PATH, exist_ok=True)
 
 ##--------------------------------- DATASET ------------------------------------
-Target = "Lambda" # Target particle (class). Options: Lambda, Gamma (In the future: KZeroShort, AntiLambda) 
+Target = "Gamma" # Target particle (class). Options: Lambda, Gamma (In the future: KZeroShort, AntiLambda) 
 DatasetName = Target # csv file
 Class_name = 'fIs'+Target
 
@@ -105,13 +108,13 @@ def objective(trial): # Optuna search space
 
             # Train test split
             X_train, y_train = Dataset.drop(Class_name, axis=1).iloc[train_index], Dataset[Class_name].iloc[train_index]
-            X_test, y_test = Dataset.drop(Class_name, axis=1).iloc[test_index], Dataset[Class_name].iloc[test_index]
+            X_val, y_val = Dataset.drop(Class_name, axis=1).iloc[test_index], Dataset[Class_name].iloc[test_index]
 
             model = XGBClassifier(**params)
             model.fit(X_train, y_train)
 
-            predictions = model.predict_proba(X_test)
-            score = roc_auc_score(y_test, predictions[:, 1])
+            predictions = model.predict_proba(X_val)
+            score = roc_auc_score(y_val, predictions[:, 1])
             scores.append(score)
         return np.mean(scores)
     
@@ -127,7 +130,7 @@ def objective(trial): # Optuna search space
 
 if fUseOptuna:
     study = optuna.create_study(direction='maximize')
-    study.optimize(objective, n_trials=50)
+    study.optimize(objective, n_trials=NOptunaTrials)
     BDT_params = study.best_params
 
 else:
@@ -157,7 +160,6 @@ if fCreateNewrun:
     RunNumber = len(next(os.walk(RESULTS_PATH))[1])
     RUN_PATH = RESULTS_PATH+'ML Run {}'.format(RunNumber)
     os.makedirs(RUN_PATH, exist_ok=True)
-
     file = open(RUN_PATH+"/README.txt", "w")
     file.write('Description: ' + RunDescription + '\n \n')
     file.write('------------------------------------------------------- \n \n')

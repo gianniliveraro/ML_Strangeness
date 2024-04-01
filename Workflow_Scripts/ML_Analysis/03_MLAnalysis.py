@@ -40,7 +40,7 @@ t0 = time.time() # Initial time
 
 ##----------------------- PATHS AND LOADING SETTINGS----------------------------
 MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
-RESULTS_PATH = MAIN_PATH + 'Workflow_Scrips/ML_Analysis/Results/'
+RESULTS_PATH = MAIN_PATH + 'Workflow_Scripts/ML_Analysis/Results/'
 
 print('Which ML Run would you like to load?. Available Runs: \n', os.listdir(RESULTS_PATH))
 RunNumber = str (input())

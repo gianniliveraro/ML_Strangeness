@@ -13,6 +13,7 @@
 #
 # This code reads a flat TTree and creates training and testing samples for ML
 # TODO: modify code to receive a TTree that passed through aod-merger!!
+# TODO: create a validation set!!
 #
 #    Comments, questions, complaints, suggestions?
 #    Please write to:
@@ -40,8 +41,8 @@ MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
 RESULTS_PATH = MAIN_PATH + '/Results/'
 
 ##--------------------------------- DATASET ----------------------------------
-DatasetName = 'MCCandidatesTree.root' # root flat TTree 
-Target = "Lambda" # Target particle (class). Options: Lambda, Gamma (In the future: KZeroShort, AntiLambda) 
+DatasetName = 'MCCandidatesTree' # root flat TTree 
+Target = "Gamma" # Target particle (class). Options: Lambda, Gamma (In the future: KZeroShort, AntiLambda) 
 Class_name = 'fIs'+Target
 
 #--------------------------------- LOADING DATA ------------------------------
