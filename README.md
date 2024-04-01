@@ -33,7 +33,7 @@ this creates an environment (called "ML_Env") with miniconda to run python codes
 ├── Workflow_Scripts      
 │   ├── Tree_Creator                       <- scripts to execute lambdakzeroTreeCreator.cxx
 │   ├── ML_Analysis                        <- scripts to process root files, train, test and analyze ML models.
-│   └── Sigma0_Analysis                    <- 
+│   └── Sigma0_Analysis                    <- scripts to execute sigma0builder.cxx
 |
 ├── PWGLF                                  <- same structure of PWGLF directory inside O2Physics.  
 │   ├── DataModel
@@ -41,7 +41,7 @@ this creates an environment (called "ML_Env") with miniconda to run python codes
 │   ├── TableProducer
 │       ├── lambdakzeromlselection.cxx     <- Load trained BDT models and creates the V0MLOutput Table
 │       ├── lambdakzeroTreeCreator.cxx     <- Creates a simple TTree with MC data to train/test ML models
-│       └── sigma0builder.cxx              <- Combine Gammas and Lambdas, based on ML selection, to create sigma0 candidates for analysis.
+│       └── sigma0builder.cxx              <- Combines Gammas and Lambdas, based on ML selection, to create sigma0 candidates for analysis.
 │   └── Tasks
 │       └── Strangeness
 │           └── sigmaanalysis.cxx        <- Analysis task of sigma0 candidates (work in progress!!)
