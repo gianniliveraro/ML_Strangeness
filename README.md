@@ -52,3 +52,9 @@ this creates an environment (called "ML_Env") with miniconda to run python codes
 
 ## Execution workflow:
 
+This is the Workflow to execute the codes in order to reproduce results: 
+
+<p align="center">
+    <img src="../ML_Strangeness/assets/StrangenessMLWorkflow.pptx.png" height="350">
+</p>
+
