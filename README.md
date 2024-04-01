@@ -42,7 +42,7 @@ this creates an environment (called "ML_Env") with miniconda to run python codes
 │       └── sigma0builder.cxx              <- Combine Gammas and Lambdas, based on ML selection, to create sigma0 candidates for analysis.
 │   └── Tasks
 │       └── Strangeness
-│           └── sigmaanalysisv2.cxx        <- Analysis task of sigma0 candidates (work in progress!!)
+│           └── sigmaanalysis.cxx        <- Analysis task of sigma0 candidates (work in progress!!)
 │
 ├── src                                    <- Installation info and instructions
 │   ├── install_mlenv.sh                   <- script to install ML environment with miniconda
