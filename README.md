@@ -6,17 +6,19 @@ This repository aims to store codes for processing/analyses of derived data insi
 0. An updated version of O2 software is required
    
 1. Clone this repository in a local machine:
-
-      git clone https://github.com/gianniliveraro/ML_Strangeness.git
-
+```c
+git clone https://github.com/gianniliveraro/ML_Strangeness.git
+``` 
 2. Navigate to the top level of the repository and run:
-     ./install/instal_mlenv.sh
-
+```c   
+./install/instal_mlenv.sh
+``` 
 this creates an environment (called "ML_Env") with miniconda to run python codes for ML analysis. 
 
 3. Activate the ML_Env environment with:
+```c
      conda activate ML_Env
-   
+``` 
 
 ## Structure/organization:
 
