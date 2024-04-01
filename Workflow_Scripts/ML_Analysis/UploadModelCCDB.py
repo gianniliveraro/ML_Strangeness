@@ -23,9 +23,6 @@ def uploadONNXToCCDB(description, onnx_file_path, start, stop):
     with open(onnx_file_path, 'rb') as file:
         onnx_data = file.read()
 
-    # Store ONNX data as TNamed in CCDB
-    #onnx_content = ROOT.TNamed("BDTModel", onnx_data)
-
     # Store ONNX content as TNamed in CCDB
     #ccdb.storeAsTFileAny(onnx_content, ccdb_path, metadata, start, stop)
     ccdb.storeAsBinaryFile(onnx_data, len(onnx_data), onnx_file_path, "ONNX Model | file read as binary string", ccdb_path, metadata, start, stop)

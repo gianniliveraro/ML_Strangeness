@@ -12,6 +12,7 @@
 # ================
 #
 # This code reads a flat TTree and creates training and testing samples for ML
+# TODO: modify code to receive a TTree that passed through aod-merger!!
 #
 #    Comments, questions, complaints, suggestions?
 #    Please write to:
@@ -31,19 +32,20 @@ t0 = time.time() # Initial time
 
 #---------------------------  MAIN CONFIGURATIONS ----------------------------
 
-SignalFrac = 0.06
-BkgFrac = 0.06
+# Number of signal and bkg candidates for training/test
+NSignal = 100000
+NBkg = 100000
 ##--------------------------------- PATHS ------------------------------------
 MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
 RESULTS_PATH = MAIN_PATH + '/Results/'
 
 ##--------------------------------- DATASET ----------------------------------
-DatasetName = 'AnalysisResults_trees' # root flat TTree 
-Target = "Gamma" # Target particle (class). Options: AntiLambda, Gamma, KZeroShort 
+DatasetName = 'MCCandidatesTree.root' # root flat TTree 
+Target = "Lambda" # Target particle (class). Options: Lambda, Gamma (In the future: KZeroShort, AntiLambda) 
 Class_name = 'fIs'+Target
 
 #--------------------------------- LOADING DATA ------------------------------
-rfile = uproot.open(MAIN_PATH+"Dataset/{}.root".format(DatasetName))
+rfile = uproot.open(MAIN_PATH+"Dataset/Interim/{}.root".format(DatasetName))
 
 # Get the list of directories (TDirectory) in the ROOT file
 keys = rfile.keys()
@@ -66,10 +68,8 @@ for dir in group_names:
 
   iteraction = iteraction + 1
 #--------------------------------- PROCESSING ---------------------------------
-
-SignalCandidates = dataframeFinal[dataframeFinal[Class_name]==True].sample(frac=SignalFrac, random_state=42) 
-NSignal = len(SignalCandidates)
-BkgCandidates = dataframeFinal[dataframeFinal[Class_name]==False].sample(frac=BkgFrac, random_state=42) #.sample(n=NBkg, random_state=42) 
+SignalCandidates = dataframeFinal[dataframeFinal[Class_name]==True].sample(n=NSignal, random_state=42) 
+BkgCandidates = dataframeFinal[dataframeFinal[Class_name]==False].sample(n=NBkg, random_state=42) 
 TotalCandidates = pd.concat([SignalCandidates, BkgCandidates], axis=0).sample(frac=1) # merging and shuffling
 
 print('Total of {} signal candidates'.format(NSignal))
@@ -78,10 +78,9 @@ print('Total of {} Bkg candidates'.format(len(BkgCandidates)))
 # Creating training and testing sets:
 Data_Train, Data_Test = train_test_split(TotalCandidates, test_size=0.30, random_state=42, stratify=TotalCandidates[Class_name])
 
-
 #----------------------------- SAVING DATASETS ---------------------------------
-Data_Train.to_parquet(MAIN_PATH+"Dataset/{}_Train.parquet".format(Target))
-Data_Test.to_parquet(MAIN_PATH+"Dataset/{}_Test.parquet".format(Target))
+Data_Train.to_parquet(MAIN_PATH+"Dataset/Processed/{}_Train.parquet".format(Target))
+Data_Test.to_parquet(MAIN_PATH+"Dataset/Processed/{}_Test.parquet".format(Target))
 
 # End
 t1 = time.time() - t0

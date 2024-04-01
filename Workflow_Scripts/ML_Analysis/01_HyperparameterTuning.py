@@ -40,18 +40,19 @@ t0 = time.time() # Initial time
 #---------------------------  MAIN CONFIGURATIONS -----------------------------
 ##--------------------------------- FLAGS ------------------------------------
 fUseOptuna = True # if False uses GridSearchCV for hyperparameters search
-fCreateNewrun = False # if True, creates a directory in 'ML_Strangeness/Results/' to save ML run configurations and results 
+fUseOptunawithCV = False # if True uses k-fold cross validation with optuna
+fCreateNewrun = True # if True, creates a directory in 'ML_Strangeness/Workflow_Scrips/ML_Analysis/Results/' to save ML run configurations and results 
 
 # Please, include a short description of this Run:
-RunDescription = "Test run of the ML workflow with Gammas"
+RunDescription = "Test run of the ML workflow with Lambdas"
 
 ##--------------------------------- PATHS ------------------------------------
 MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
-RESULTS_PATH = MAIN_PATH + '/Results/'
+RESULTS_PATH = MAIN_PATH + 'Workflow_Scrips/ML_Analysis/Results/'
 os.makedirs(RESULTS_PATH, exist_ok=True)
 
 ##--------------------------------- DATASET ------------------------------------
-Target = "Gamma" # Target particle. Options: AntiLambda, Gamma, KZeroShort 
+Target = "Lambda" # Target particle (class). Options: Lambda, Gamma (In the future: KZeroShort, AntiLambda) 
 DatasetName = Target # csv file
 Class_name = 'fIs'+Target
 
@@ -59,10 +60,14 @@ Class_name = 'fIs'+Target
 FeaturesToTrain = ['fPt', 'fQt', 'fAlpha', 'fRadius', 'fCosPA', 'fDCADau',
        'fDCANegPV', 'fDCAPosPV']
 
-Dataset = pd.read_parquet(MAIN_PATH+'Dataset/{}_Train.parquet'.format(DatasetName))
+Dataset = pd.read_parquet(MAIN_PATH+'Dataset/Processed/{}_Train.parquet'.format(DatasetName))
 Features_DF = Dataset[FeaturesToTrain]
 classes_DF = Dataset[[Class_name]].astype('int32')
 
+# Loading validation set
+DatasetTest = pd.read_parquet(MAIN_PATH+'Dataset/Processed/{}_Test.parquet'.format(DatasetName))
+X_test = DatasetTest[FeaturesToTrain]
+y_test = DatasetTest[[Class_name]]
 #BDtClassweight = len(classes_DF[classes[Class_name]==0])/len(classes[classes[Class_name]==1]) # activate this if class balancing is necessary
 
 ##--------------------- HYPERPARAMETER SEARCH SPACE ----------------------------
@@ -92,28 +97,37 @@ def objective(trial): # Optuna search space
         'eval_metric': 'logloss'
     }
 
-    kf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    if fUseOptunawithCV:
+        kf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
 
-    scores = []
-    for train_index, test_index in kf.split(Features_DF, classes_DF):
+        scores = []
+        for train_index, test_index in kf.split(Features_DF, classes_DF):
 
-        # Train test split
-        X_train, y_train = Dataset.drop(Class_name, axis=1).iloc[train_index], Dataset[Class_name].iloc[train_index]
-        X_test, y_test = Dataset.drop(Class_name, axis=1).iloc[test_index], Dataset[Class_name].iloc[test_index]
+            # Train test split
+            X_train, y_train = Dataset.drop(Class_name, axis=1).iloc[train_index], Dataset[Class_name].iloc[train_index]
+            X_test, y_test = Dataset.drop(Class_name, axis=1).iloc[test_index], Dataset[Class_name].iloc[test_index]
 
+            model = XGBClassifier(**params)
+            model.fit(X_train, y_train)
+
+            predictions = model.predict_proba(X_test)
+            score = roc_auc_score(y_test, predictions[:, 1])
+            scores.append(score)
+        return np.mean(scores)
+    
+    else:
         model = XGBClassifier(**params)
-        model.fit(X_train, y_train)
+        model.fit(Features_DF, classes_DF)
 
         predictions = model.predict_proba(X_test)
         score = roc_auc_score(y_test, predictions[:, 1])
-        scores.append(score)
-    return np.mean(scores)
+        return score
 
 ##--------------------------- RUNNING SEARCH ----------------------------
 
 if fUseOptuna:
     study = optuna.create_study(direction='maximize')
-    study.optimize(objective, n_trials=100)
+    study.optimize(objective, n_trials=50)
     BDT_params = study.best_params
 
 else:
@@ -123,7 +137,6 @@ else:
     BDT_params = CV_BDT.best_params_ # BDT
 
 print('Best hyperparameters:', BDT_params)
-
 
 ##--------------------------- SAVING IMPORTANT INFO ----------------------------
 Dataset_params = {}
@@ -142,7 +155,7 @@ RunConfig_dict["BDT"] = BDT_params
 
 if fCreateNewrun:
     RunNumber = len(next(os.walk(RESULTS_PATH))[1])
-    RUN_PATH = RESULTS_PATH+'Run {}'.format(RunNumber)
+    RUN_PATH = RESULTS_PATH+'ML Run {}'.format(RunNumber)
     os.makedirs(RUN_PATH, exist_ok=True)
 
     file = open(RUN_PATH+"/README.txt", "w")
@@ -163,4 +176,4 @@ if fCreateNewrun:
         if len(data) > 0 :
             file_object.write("\n")
         # Append text at the end of file
-        file_object.write("Run {}: {}".format(RunNumber, RunDescription))
+        file_object.write("ML Run {}: {}".format(RunNumber, RunDescription))

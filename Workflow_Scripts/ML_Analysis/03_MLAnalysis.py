@@ -9,10 +9,10 @@
 # granted to it by virtue of its status as an Intergovernmental Organization
 # or submit itself to any jurisdiction.
 #
-# ML hyperparameter tuning code
+# ML analysis code
 # ================
 #
-# This code....
+# BDT Performance Analysis using the test set predictions
 #
 #    Comments, questions, complaints, suggestions?
 #    Please write to:
@@ -40,9 +40,9 @@ t0 = time.time() # Initial time
 
 ##----------------------- PATHS AND LOADING SETTINGS----------------------------
 MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
-RESULTS_PATH = MAIN_PATH + '/Results/'
+RESULTS_PATH = MAIN_PATH + 'Workflow_Scrips/ML_Analysis/Results/'
 
-print('Which Run would you like to load?. Available Runs: \n', os.listdir(RESULTS_PATH))
+print('Which ML Run would you like to load?. Available Runs: \n', os.listdir(RESULTS_PATH))
 RunNumber = str (input())
 RUN_PATH = RESULTS_PATH+'{}'.format(RunNumber)
 # Loading dict with predictions
@@ -50,8 +50,7 @@ with open(RUN_PATH+"/RunConfig.pkl", 'rb') as f:
     RunConfig = pickle.load(f)
 
 PredictionsDF = pd.read_parquet(RUN_PATH+"/Predictions.parquet")
-PredictionsDF = PredictionsDF[PredictionsDF.InvMass<4]
-# PredictionsDF = PredictionsDF[PredictionsDF.InvMass>1.0]
+#PredictionsDF = PredictionsDF[PredictionsDF.InvMass<4]
 
 print('N signal candidates: ', len(PredictionsDF[PredictionsDF.GroundTruth==1]))
 print('N bkg candidates: ', len(PredictionsDF[PredictionsDF.GroundTruth==0]))

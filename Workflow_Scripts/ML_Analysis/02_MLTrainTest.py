@@ -9,10 +9,10 @@
 # granted to it by virtue of its status as an Intergovernmental Organization
 # or submit itself to any jurisdiction.
 #
-# ML hyperparameter tuning code
+# ML training/test code
 # ================
 #
-# This code finds the best set of hyperparameters of a BDT model
+# This code train and test a BDT model with the best set of hiperparameters
 #
 #    Comments, questions, complaints, suggestions?
 #    Please write to:
@@ -44,9 +44,9 @@ t0 = time.time() # Initial time
 
 ##----------------------- PATHS AND LOADING SETTINGS----------------------------
 MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
-RESULTS_PATH = MAIN_PATH + '/Results/'
+RESULTS_PATH = MAIN_PATH + 'Workflow_Scrips/ML_Analysis/Results/'
 
-print('Which Run would you like to load?. Available Runs: \n', os.listdir(RESULTS_PATH))
+print('Which ML Run would you like to load?. Available Runs: \n', os.listdir(RESULTS_PATH))
 RunNumber = str (input())
 RUN_PATH = RESULTS_PATH+'{}'.format(RunNumber)
 # Loading dict with predictions
