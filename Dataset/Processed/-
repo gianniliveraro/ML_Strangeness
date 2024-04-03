@@ -1,7 +1,0 @@
-tv__tree = (TTree *)0x7f52847caf20;
-tv__tree_list->Add(tv__tree);
-tv__tree->Draw("fLambdaQt:fLambdaAlpha","","colz", 223224, 0);
-tv__tree->Draw("fPhotonQt:fPhotonAlpha","","colz", 223224, 0);
-tv__tree->Draw("fSigmaMass","fIsSigma==1","", 223224, 0);
-tv__tree->Draw("fSigmaMass","","", 223224, 0);
-tv__tree->Draw("fSigmaMass","fIsSigma==1","", 223224, 0);
