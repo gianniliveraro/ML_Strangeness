@@ -43,15 +43,15 @@ t0 = time.time() # Initial time
 ##--------------------------------- FLAGS ------------------------------------
 fUseOptuna = True # if False uses GridSearchCV for hyperparameters search
 fUseOptunawithCV = False # if True uses k-fold cross validation with optuna
-fCreateNewrun = True # if True, creates a directory in 'ML_Strangeness/Workflow_Scrips/ML_Analysis/Results/' to save ML run configurations and results 
+fCreateNewrun = False # if True, creates a directory in 'ML_Strangeness/Workflow_Scrips/ML_Analysis/Results/' to save ML run configurations and results 
 NOptunaTrials = 50 # number of Optuna trials
 
 # Please, include a short description of this Run:
-RunDescription = "ML run for Lambdas using only qt and alpha as features"
+RunDescription = "ML run for Lambdas using only pt as feature"
 
 ##--------------------------------- PATHS ------------------------------------
 MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
-RESULTS_PATH = MAIN_PATH + 'Workflow_Scripts/ML_Analysis/Results/'
+RESULTS_PATH = MAIN_PATH + 'DEV/Gianni/Codes/Results/'
 os.makedirs(RESULTS_PATH, exist_ok=True)
 
 ##--------------------------------- DATASET ------------------------------------
@@ -62,8 +62,9 @@ Class_name = 'fIs'+Target
 # Define Features
 # FeaturesToTrain = ['fPt', 'fQt', 'fAlpha', 'fRadius', 'fCosPA', 'fDCADau', 
 #             'fDCANegPV', 'fDCAPosPV']
-FeaturesToTrain = ['fQt', 'fAlpha']
+FeaturesToTrain = ['fPt', 'fCosPA', 'fDCADau']
 
+# fDCAPosPV tá altamente correlacionada com a saída!!
 Dataset = pd.read_parquet(MAIN_PATH+'Dataset/Processed/{}_Train.parquet'.format(DatasetName))
 Features_DF = Dataset[FeaturesToTrain]
 classes_DF = Dataset[[Class_name]].astype('int32')
