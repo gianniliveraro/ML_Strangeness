@@ -1,6 +1,5 @@
-Dataset/Raw/*.root
-Dataset/Interim/*.root
-Dataset/Interim/*.parquet
-Dataset/Processed/*.root
-Dataset/Processed/*.parquet
-Workflow_Scripts/ML_Analysis/Results/
+*.parquet
+*.root
+*.pem
+*.onnx
+*.pdf

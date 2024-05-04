@@ -1,0 +1,4 @@
+tv__tree = (TTree *)0x7fd435c16a40;
+tv__tree_list->Add(tv__tree);
+tv__tree->Draw("fQt:fAlpha","","colz", 91348, 0);
+tv__tree->Draw("fV0radius:fZ","fIsGamma==1","colz", 91348, 0);

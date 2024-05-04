@@ -1,0 +1,1 @@
+o2-aod-merger --input ao2dstomerge.txt --output MCCandidatesTTreeMerged_QAOnly.root
