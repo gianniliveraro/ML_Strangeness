@@ -41,7 +41,8 @@ t0 = time.time() # Initial time
 ##----------------------- PATHS AND LOADING SETTINGS----------------------------
 # Change these paths to ones in your own machine!
 MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
-RESULTS_PATH = MAIN_PATH + 'Codes/Results/'
+StudyName = "FindableExercise"
+RESULTS_PATH = MAIN_PATH + 'Studies/{}/ML_Runs/'.format(StudyName)
 
 print('Which ML Run would you like to load?. Available Runs: \n', os.listdir(RESULTS_PATH))
 RunNumber = str (input())

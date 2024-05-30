@@ -29,21 +29,22 @@ import random
 
 #---------------------------  MAIN CONFIGURATIONS ----------------------------
 
+##--------------------------------- PATHS ------------------------------------
+# Change these paths to ones in your own machine!
+MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
+DatasetDirectory = "LF_LHC24d2b_pass3_Findable"
+StudyName = "FindableExercise"
+DATA_PATH = MAIN_PATH + "Dataset/Raw/{}/".format(DatasetDirectory)
+
 ## Fraction of AO2D files that will be used in the ML Workflow
-Fraction = 0.1 
+Fraction = 0.1
 
 ## input list with all AO2Ds
 input_file = "input.txt" 
 
 ## Output file names
-output_file_1 = "AO2Ds_MLInputList.txt" # List for ML Workflow
-output_file_2 = "AO2Ds_O2InputList.txt" # List for O2 workflow
-
-##--------------------------------- PATHS ------------------------------------
-# Change these paths to ones in your own machine!
-DatasetDirectory = "LF_LHC23k6e_pass2_Strangeness"
-MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
-DATA_PATH = MAIN_PATH + "Dataset/Raw/{}/".format(DatasetDirectory)
+output_file_1 = "Studies/{}/AO2Ds_MLInputList.txt".format(StudyName) # List for ML Workflow
+output_file_2 = "Studies/{}/AO2Ds_O2InputList.txt".format(StudyName) # List for O2 workflow
 
 #---------------------------- HELPER FUNCTIONS ----------------------------
 

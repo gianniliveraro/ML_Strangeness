@@ -24,15 +24,20 @@
 import ROOT
 
 #---------------------------  MAIN CONFIGURATIONS ----------------------------
-sor = 1695750422702
-eor = 1698617337860
+##------------------------------ LOCAL PATHS----------------------------------
+MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
+StudyName = "FindableExercise"
+STUDY_PATH = 'Studies/{}/'.format(StudyName)
+onnx_file_paths = [STUDY_PATH+"Gamma_BDTModel.onnx", STUDY_PATH+"Lambda_BDTModel.onnx", STUDY_PATH+"AntiLambda_BDTModel.onnx"]
 
-onnx_file_name = "Gamma_BDTModel"
-onnx_file_path = onnx_file_name+".onnx"
-description = onnx_file_name+"first test!"
-
+##------------------------------ CCDB PATHS ----------------------------------
+description = "First test!"
 ccdb_path_production = "Users/g/gsetouel/MLModels2"
 ccdb_url_production = "https://alice-ccdb.cern.ch"
+
+##------------------------------ TIMESTAMPS-----------------------------------
+sor = 1695750422702
+eor = 1698617337860
 
 
 #----------------------------------  SETUP -----------------------------------
@@ -60,6 +65,7 @@ def uploadONNXToCCDB(description, onnx_file_path, start, stop):
 
 
 #--------------------------------  EXECUTION ----------------------------
-uploadONNXToCCDB(description, onnx_file_path, int(int(sor) / 1000 - 2) * 1000, int(int(eor) / 1000 + 10) * 1000)
+for path in onnx_file_paths:
+    uploadONNXToCCDB(description, path, int(int(sor) / 1000 - 2) * 1000, int(int(eor) / 1000 + 10) * 1000)
 
 

@@ -7,13 +7,10 @@
         "start-value-enumeration": "0",
         "end-value-enumeration": "-1",
         "step-value-enumeration": "1",
-        "aod-file": "@AO2Ds_ReducedList.txt"
+        "aod-file": "@Findable_AO2Ds_MLInputList.txt"
     },
     "cascadespawner": "",
     "lambdakzerospawner": "",
-    "stradautracksextraconverter": "",
-    "v0coresconverter": "",
-    "stradautrackstofpidconverter": "",
     "lambdakzeropid": {
         "d_bz": "-999",
         "tofPosition": "377.93399",

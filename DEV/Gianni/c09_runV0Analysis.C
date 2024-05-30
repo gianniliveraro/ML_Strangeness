@@ -16,7 +16,7 @@
 #include "strangenessModule.h"
 using namespace std;
 
-int 09_runV0Analysis(){
+int c09_runV0Analysis(){
   cout<<"----------------------------------------------------"<<endl;
   cout<<"               V0 Analysis Macro "<<endl;
   cout<<"----------------------------------------------------"<<endl;

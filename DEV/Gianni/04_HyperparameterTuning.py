@@ -14,8 +14,6 @@
 #
 # This code finds the best set of hyperparameters of a BDT model
 #
-# TODO: use a validation set for hyperparameter tuning!!
-#
 #    Comments, questions, complaints, suggestions?
 #    Please write to:
 #    gianni.shigeru.setoue.liveraro@cern.ch
@@ -51,8 +49,9 @@ RunDescription = "ML test run for AntiLambdas in MC PbPb"
 
 ##--------------------------------- PATHS ------------------------------------
 # Change these paths to ones in your own machine!
-MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
-RESULTS_PATH = MAIN_PATH + 'Codes/Results/'
+MAIN_PATH = '/storage1/liveraro/ML_Strangeness/DEV/Gianni/'
+StudyName = "FindableExercise"
+RESULTS_PATH = MAIN_PATH + 'Studies/{}/ML_Runs/'.format(StudyName)
 os.makedirs(RESULTS_PATH, exist_ok=True)
 
 ##--------------------------------- DATASET ------------------------------------
@@ -167,7 +166,7 @@ RunConfig_dict["BDT"] = BDT_params
 
 if fCreateNewrun:
     RunNumber = len(next(os.walk(RESULTS_PATH))[1])
-    RUN_PATH = RESULTS_PATH+'ML Run {}'.format(RunNumber)
+    RUN_PATH = RESULTS_PATH+'Run {}'.format(RunNumber)
     os.makedirs(RUN_PATH, exist_ok=True)
     file = open(RUN_PATH+"/README.txt", "w")
     file.write('Description: ' + RunDescription + '\n \n')
@@ -187,4 +186,4 @@ if fCreateNewrun:
         if len(data) > 0 :
             file_object.write("\n")
         # Append text at the end of file
-        file_object.write("ML Run {}: {}".format(RunNumber, RunDescription))
+        file_object.write("Run {}: {}".format(RunNumber, RunDescription))

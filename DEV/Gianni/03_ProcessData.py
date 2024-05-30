@@ -13,7 +13,7 @@
 # ================
 #
 # This code reads a flat TTree and creates training and testing samples for ML
-# TODO: create a validation set!!
+# TODO: Create a dataset description file!!
 #
 #    Comments, questions, complaints, suggestions?
 #    Please write to:
@@ -34,18 +34,20 @@ t0 = time.time() # Initial time
 #---------------------------  MAIN CONFIGURATIONS ----------------------------
 fSplitTrainTest = False # if true, perform train test split. If false, the entire input dataset is converted to .parquet
 
-# Number of signal and bkg candidates for training/test
+# Please, include a short description of the output dataset:
+DatasetDescription = "Dataset with...."
+
+# Number of signal and bkg candidates for training/test. Set these values if fSplitTrainTest==True
 NSignal = 200000
 NBkg = 200000
 
 ##--------------------------------- PATHS ------------------------------------
 # Change these paths to ones in your own machine!
 MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
-RESULTS_PATH = MAIN_PATH + '/Results/'
 
 ##--------------------------------- DATASET ----------------------------------
-DatasetName = 'MCSigma0GammasTree' # root flat TTree 
-Target = "AntiLambda" # Target particle (class). Options: Lambda, Gamma, KZeroShort, AntiLambda
+DatasetName = 'MCSigma0FindableLambdasTree' # input root flat TTree 
+Target = "Lambda" # Target particle (class). Options: Lambda, Gamma, KZeroShort, AntiLambda. Set this if fSplitTrainTest==True!
 Class_name = 'fIs'+Target
 
 #--------------------------------- LOADING DATA ------------------------------
@@ -97,7 +99,21 @@ if fSplitTrainTest:
   print('[INFO]: Test set total size: {}'.format(len(Data_Test)))
 
 else: 
-  dataframeFinal.to_parquet(MAIN_PATH+"Dataset/Interim/{}.parquet".format(DatasetName))
+  print("\n-------------------------------------------")
+  print('[INFO]: The input dataset has a total of {} signal candidates'.format(len(dataframeFinal[dataframeFinal[Class_name]==True])))
+  print('[INFO]: The input dataset has a total of {} Bkg candidates'.format(len(dataframeFinal[dataframeFinal[Class_name]==False])))
+  dataframeFinal.to_parquet(MAIN_PATH+"Dataset/Processed/{}.parquet".format(DatasetName))
+
+
+# # Updating RunList:
+# with open(RESULTS_PATH+"RunList.txt", "a+") as file_object:
+#     file_object.seek(0)
+#     # If file is not empty then append '\n'
+#     data = file_object.read(100)
+#     if len(data) > 0 :
+#         file_object.write("\n")
+#     # Append text at the end of file
+#     file_object.write("Run {}: {}".format(RunNumber, RunDescription))
 
 t1 = time.time() - t0
 print("\n_________________________________________")

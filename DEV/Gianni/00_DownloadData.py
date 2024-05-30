@@ -35,8 +35,8 @@ t0 = time.time() # Initial time
 VERBOSE_MODE = False
 DRY_MODE_RUNNING = False
 fDOWNLOAD_FILES=True
-TRAIN_ID = 205507 
-OutputDirectoryName = 'LF_LHC23k6e_pass2_Findable' #  Choose the name of the download directory
+TRAIN_ID = 216350 
+OutputDirectoryName = 'LF_LHC24d2b_pass3_Findable' #  Choose the name of the download directory
 
 ##--------------------------------- PATHS ------------------------------------
 # Change these paths to ones in your own machine!
