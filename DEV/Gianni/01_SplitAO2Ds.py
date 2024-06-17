@@ -32,8 +32,8 @@ import random
 ##--------------------------------- PATHS ------------------------------------
 # Change these paths to ones in your own machine!
 MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
-DatasetDirectory = "LF_LHC24d2b_pass3_Findable"
-StudyName = "FindableExercise"
+DatasetDirectory = "LF_LHC24d2b_pass3_Strangeness"
+StudyName = "TrainingGeneralMLModels"
 DATA_PATH = MAIN_PATH + "Dataset/Raw/{}/".format(DatasetDirectory)
 
 ## Fraction of AO2D files that will be used in the ML Workflow

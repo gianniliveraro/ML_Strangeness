@@ -1,0 +1,4 @@
+/storage1/liveraro/ML_Strangeness/Dataset/Raw/LF_LHC24d2b_pass3_Findable/AnalysisResults_0.root
+/storage1/liveraro/ML_Strangeness/Dataset/Raw/LF_LHC24d2b_pass3_Findable/AnalysisResults_1.root
+/storage1/liveraro/ML_Strangeness/Dataset/Raw/LF_LHC24d2b_pass3_Findable/AnalysisResults_2.root
+/storage1/liveraro/ML_Strangeness/Dataset/Raw/LF_LHC24d2b_pass3_Findable/AnalysisResults_3.root

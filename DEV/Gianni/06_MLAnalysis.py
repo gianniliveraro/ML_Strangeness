@@ -33,6 +33,7 @@ from sklearn.preprocessing import binarize
 import pickle
 import json
 import time
+import shap
 from matplotlib import pyplot as plt
 t0 = time.time() # Initial time
 
@@ -41,8 +42,8 @@ t0 = time.time() # Initial time
 ##----------------------- PATHS AND LOADING SETTINGS----------------------------
 # Change these paths to ones in your own machine!
 MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
-StudyName = "FindableExercise"
-RESULTS_PATH = MAIN_PATH + 'Studies/{}/ML_Runs/'.format(StudyName)
+StudyName = "TrainingGeneralMLModels"
+RESULTS_PATH = MAIN_PATH + 'DEV/Gianni/Studies/{}/ML_Runs/'.format(StudyName)
 
 print('Which ML Run would you like to load?. Available Runs: \n', os.listdir(RESULTS_PATH))
 RunNumber = str (input())
@@ -50,6 +51,8 @@ RUN_PATH = RESULTS_PATH+'{}'.format(RunNumber)
 # Loading dict with predictions
 with open(RUN_PATH+"/RunConfig.pkl", 'rb') as f:
     RunConfig = pickle.load(f)
+    FeaturesToTrain = RunConfig['Dataset']['Features']
+    DatasetName = RunConfig['Dataset']['DatasetName']
 
 PredictionsDF = pd.read_parquet(RUN_PATH+"/Predictions.parquet")
 #PredictionsDF = PredictionsDF[PredictionsDF.InvMass<4]
@@ -127,9 +130,9 @@ plt.savefig(RUN_PATH+'/ProbabilityPlot.png', bbox_inches='tight')
 plt.show()
 
 # Ground-truth Mass histogram
-NBins = 500 
+NBins = 100 
 xmin = 0.0
-xmax = 2.0
+xmax = 0.2
 overall_range = (PredictionsDF['InvMass'].min(), PredictionsDF['InvMass'].max())
 bin_width = (overall_range[1] - overall_range[0]) / NBins
 bins = np.arange(overall_range[0], overall_range[1] + bin_width, bin_width)
@@ -156,7 +159,7 @@ plt.show()
 plt.clf()
 
 # ML output Mass histogram
-NBins = 2000 
+NBins = 500 
 overall_range = (PredictionsDF['InvMass'].min(), PredictionsDF['InvMass'].max())
 bin_width = (overall_range[1] - overall_range[0]) / NBins
 bins = np.arange(overall_range[0], overall_range[1] + bin_width, bin_width)
@@ -181,3 +184,21 @@ ax.grid(linestyle='--')
 #plt.figtext(0.70, 0.75, r"$\bf{ALICE\/ Performance}$" + '\n Pb-Pb at $\sqrt{s}=5.02$ $TeV$ \n $(0-100)$%', ha='center')
 plt.savefig(RUN_PATH+'/MLInvMassPlot.png', bbox_inches='tight')
 plt.show()
+plt.clf()
+#--------------------------- FEATURE IMPORTANCE --------------------
+
+SHAPDF = pd.read_parquet(RUN_PATH+"/SHAPValues.parquet")
+#print('SHAPDF', SHAPDF)
+shap.summary_plot(SHAPDF, features=FeaturesToTrain, feature_names=FeaturesToTrain, plot_type='bar', plot_size=(10,5), show=False)
+plt.savefig(RUN_PATH+"/ShapSummary.png",dpi=300) #.png,.pdf will also support here
+plt.clf()
+
+# Beeswarm plot! 
+
+# # Loading test test
+# DatasetTest = pd.read_parquet(MAIN_PATH+'Dataset/Processed/{}/{}_Test.parquet'.format(StudyName, DatasetName))
+# X_test = DatasetTest[FeaturesToTrain]
+
+# shap.summary_plot(SHAPDF.values, X_test, plot_size=(10,5), show=False)
+# plt.savefig(RUN_PATH+"/ShapSummary2.png",dpi=300) #.png,.pdf will also support here
+# plt.clf()

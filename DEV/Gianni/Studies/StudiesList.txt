@@ -1,2 +1,3 @@
 TestRunK0short: Diretório de testes para códigos de extração de sinal + eficiência + extração de sinal.
 FindableExercise: Diretório para estudar os findable candidates, que são as combinações verdadeiras dos candidatos segundo o MC. O objetivo vai ser entender qual a diferença dos lambdas/gammas vindos do sigma0 para os lambdas/gammas de outros processos.
+TrainingGeneralMLModels: Diretório para estudar algoritmos de ML treinados para selecionar gammas/lambdas em análises gerais.

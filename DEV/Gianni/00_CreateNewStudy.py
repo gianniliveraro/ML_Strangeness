@@ -24,9 +24,9 @@ import os
     
 #____________________________
 # Folder structure
-StudyName = "FindableExercise"
-StudyDescription = "Diretório para estudar os findable candidates, que são as combinações verdadeiras dos candidatos segundo o MC. O objetivo vai ser entender qual a diferença dos lambdas/gammas vindos do sigma0 para os lambdas/gammas de outros processos."
-DatasetsNames = "LF_LHC24d2b_pass3_Findable"
+StudyName = "TrainingGeneralMLModels"
+StudyDescription = "Diretório para estudar algoritmos de ML treinados para selecionar gammas/lambdas em análises gerais."
+DatasetsNames = "LF_LHC24d2b_pass3_Strangeness"
 
 # Diretórios principais
 MAIN_PATH = '/storage1/liveraro/ML_Strangeness/DEV/Gianni/'

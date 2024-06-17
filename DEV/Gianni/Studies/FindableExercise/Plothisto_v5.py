@@ -27,8 +27,8 @@ import numpy as np
 
 #____________________________
 # Configurations
-Species = "Gammas"
-Species2 = "Gamma"
+Species = "Lambdas"#"Gammas" 
+Species2 = "Lambda" #"Gamma"
 Mother = "Sigma0"
 
 #____________________________
@@ -67,6 +67,9 @@ def ProcessHistos(histo):
         HistoEdges_PT = histo.axis(axis=1).edges()
         Histo_values = histo.values()
         Histo_errors = histo.errors()
+
+        # print('HistoEdges_PT', HistoEdges_PT)
+        # print('Histo_values', Histo_values)
 
     # Calculate bin sizes based on FoundEdges_PT
     bin_sizes = np.diff(HistoEdges_PT)/2
@@ -125,16 +128,19 @@ def calcEff(cent_bins, hNumerator, hDenominator):
         Numerator, Numerator_errors = Rebin(CustomBins, hNumEdges_Centrality, Numerator)
         
     elif len(hDenoEdges_Centrality)!=len(hNumEdges_Centrality):
+
+        print("------------------------------------------")
+        print("Rebinning process activated!")
         
         if (len(hNumEdges_Centrality)<len(hDenoEdges_Centrality)):
-            #print('Histos will be rebinned from: ', hDenoEdges_Centrality)
-            #print('to: ', hNumEdges_Centrality)
+            # print('Histos will be rebinned from: ', hDenoEdges_Centrality)
+            # print('to: ', hNumEdges_Centrality)
             Point_positions, bin_sizes = NumPoint_positions, Numbin_sizes
             HistoEdges_Centrality = hNumEdges_Centrality
             Denominator, Denominator_errors = Rebin(hNumEdges_Centrality, hDenoEdges_Centrality, Denominator)
         else:
-            #print('Histos will be rebinned from: ', hNumEdges_Centrality)
-            #print('to: ', hDenoEdges_Centrality)
+            # print('Histos will be rebinned from: ', hNumEdges_Centrality)
+            # print('to: ', hDenoEdges_Centrality)
             Point_positions, bin_sizes = DenPoint_positions, Denbin_sizes
             HistoEdges_Centrality = hDenoEdges_Centrality
             Numerator, Numerator_errors = Rebin(hDenoEdges_Centrality, hNumEdges_Centrality, Numerator)
@@ -179,16 +185,16 @@ def plotEff(cent_bins_list, histograms_list, labels_list, plot_name, ylabel):
         print("Point_positions: {}, Eff: {}".format(Point_positions, Eff_List))
         for j in range(len(Eff_List)):    
             
-            #ax.errorbar(Point_positions, Eff_List[j], yerr=EffError_List[j], xerr=bin_sizes, fmt='o', label=r'{}'.format(labels_list[i][0])+', {}'.format(CentralityLabel[j]), markersize=4)    
-            ax.errorbar(Point_positions, Eff_List[j], yerr=EffError_List[j], xerr=bin_sizes, fmt='o', label=r'{}'.format(labels_list[i][0])+'{}'.format(CentralityLabel[j]), markersize=4)    
+            ax.errorbar(Point_positions, Eff_List[j], yerr=EffError_List[j], xerr=bin_sizes, fmt='o', label=r'{}'.format(labels_list[i][0])+', {}'.format(CentralityLabel[j]), markersize=4)    
+            #ax.errorbar(Point_positions, Eff_List[j], yerr=EffError_List[j], xerr=bin_sizes, fmt='o', label=r'{}'.format(labels_list[i][0])+'{}'.format(CentralityLabel[j]), markersize=4)    
             #ax.errorbar(Point_positions, Eff_List[j], yerr=EffError_List[j], xerr=bin_sizes, fmt='o', label=r'{}'.format(labels_list[i][0]), markersize=4)    
 
     #------------------------------------------------
     # Plot configs: 
     #plt.figtext(0.275, 0.670, r"$\bf{ALICE}$  $\bf{MC}$" + '\n Pb-Pb at $\sqrt{s}=5.36$ TeV \n $|\mathrm{y}|<0.5$', ha='center') # ALICE
     #plt.figtext(0.275, 0.670, r"$\bf{ALICE}$  $\bf{MC}$" + '\n 0-90% Pb-Pb, $\sqrt{s}=5.36$ TeV \n $|\mathrm{y}|<0.5$', ha='center') # ALICE
-    #plt.figtext(0.275, 0.670, r"$\bf{ALICE}$  $\bf{MC}$" + '\n Pb-Pb, $\sqrt{s}=5.36$ TeV \n Primary $\Lambda^0$, $|\mathrm{y}|<0.5$', ha='center') # ALICE
-    plt.figtext(0.275, 0.670, r"$\bf{ALICE}$  $\bf{MC}$" + '\n Pb-Pb, $\sqrt{s}=5.36$ TeV \n Photons, $|\mathrm{y}|<0.5$', ha='center') # ALICE
+    plt.figtext(0.275, 0.670, r"$\bf{ALICE}$  $\bf{MC}$" + '\n Pb-Pb, $\sqrt{s}=5.36$ TeV \n Primary $\Lambda^0$, $|\mathrm{y}|<0.5$', ha='center') # ALICE
+    #plt.figtext(0.275, 0.670, r"$\bf{ALICE}$  $\bf{MC}$" + '\n Pb-Pb, $\sqrt{s}=5.36$ TeV \n Photons, $|\mathrm{y}|<0.5$', ha='center') # ALICE
 
     # ax.set_xlim((0,10.001))
     # ax.set_ylim((0,0.2))
@@ -253,16 +259,16 @@ histograms_list = [[[hFindSpeciesAll, hGenSpecies]],
                   [[hAccTrackSpeciesAll, hGenSpecies]]]  # List of lists of histograms
 
 
-#plotEff(cent_bins_list, histograms_list, labels_list, "Efficiency2_{}".format(Species), "Efficiency x Acceptance")
+plotEff(cent_bins_list, histograms_list, labels_list, "Efficiency_{}".format(Species), "Efficiency x Acceptance")
 
 ################# Acceptably tracked / findable
-cent_bins_list = [[0, 2, 5, 7]]  # List of lists of centrality bin indices
+# cent_bins_list = [[0, 2, 5, 7]]  # List of lists of centrality bin indices
 
-labels_list = [[""]] # prefix
-histograms_list = [[[hAccTrackSpeciesAll, hFindSpeciesAll]]]  # List of lists of histograms
+# labels_list = [[""]] # prefix
+# histograms_list = [[[hAccTrackSpeciesAll, hFindSpeciesAll]]]  # List of lists of histograms
 
 
-plotEff(cent_bins_list, histograms_list, labels_list, "AccTrack_x_findable_{}".format(Species), "Acceptably tracked / Findable")
+# plotEff(cent_bins_list, histograms_list, labels_list, "AccTrack_x_findable_{}".format(Species), "Acceptably tracked / Findable")
 
 ################# Found / findable
 # cent_bins_list = [[0, 5],

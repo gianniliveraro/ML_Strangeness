@@ -45,13 +45,13 @@ fCreateNewrun = True # if True, creates a directory in 'ML_Strangeness/Workflow_
 NOptunaTrials = 50 # number of Optuna trials
 
 # Please, include a short description of this Run:
-RunDescription = "ML test run for AntiLambdas in MC PbPb"
+RunDescription = "ML test run for AntiLambdas in MC PbPb - now, with the right dataset!"
 
 ##--------------------------------- PATHS ------------------------------------
 # Change these paths to ones in your own machine!
-MAIN_PATH = '/storage1/liveraro/ML_Strangeness/DEV/Gianni/'
-StudyName = "FindableExercise"
-RESULTS_PATH = MAIN_PATH + 'Studies/{}/ML_Runs/'.format(StudyName)
+MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
+StudyName = "TrainingGeneralMLModels"
+RESULTS_PATH = MAIN_PATH + 'DEV/Gianni/Studies/{}/ML_Runs/'.format(StudyName)
 os.makedirs(RESULTS_PATH, exist_ok=True)
 
 ##--------------------------------- DATASET ------------------------------------
@@ -71,12 +71,12 @@ Class_name = 'fIs'+Target
 # Define/choose your features!
 FeaturesToTrain = ["fV0radius", "fPA", "fDCApostopv", "fDCAnegtopv", "fDCAV0daughters", "fDCAv0topv"]
 
-Dataset = pd.read_parquet(MAIN_PATH+'Dataset/Processed/{}_Train.parquet'.format(DatasetName))
+Dataset = pd.read_parquet(MAIN_PATH+'Dataset/Processed/{}/{}_Train.parquet'.format(StudyName, DatasetName))
 Features_DF = Dataset[FeaturesToTrain]
 classes_DF = Dataset[[Class_name]].astype('int32')
 
 # Loading validation set
-DatasetVal = pd.read_parquet(MAIN_PATH+'Dataset/Processed/{}_Val.parquet'.format(DatasetName))
+DatasetVal = pd.read_parquet(MAIN_PATH+'Dataset/Processed/{}/{}_Val.parquet'.format(StudyName, DatasetName))
 X_val = DatasetVal[FeaturesToTrain]
 y_val = DatasetVal[[Class_name]]
 #BDtClassweight = len(classes_DF[classes[Class_name]==0])/len(classes[classes[Class_name]==1]) # activate this if class balancing is necessary

@@ -1,0 +1,7 @@
+/storage1/liveraro/ML_Strangeness/Dataset/Raw/LF_LHC24d2b_pass3_Strangeness/AO2D_186.root
+/storage1/liveraro/ML_Strangeness/Dataset/Raw/LF_LHC24d2b_pass3_Strangeness/AO2D_271.root
+/storage1/liveraro/ML_Strangeness/Dataset/Raw/LF_LHC24d2b_pass3_Strangeness/AO2D_156.root
+/storage1/liveraro/ML_Strangeness/Dataset/Raw/LF_LHC24d2b_pass3_Strangeness/AO2D_305.root
+/storage1/liveraro/ML_Strangeness/Dataset/Raw/LF_LHC24d2b_pass3_Strangeness/AO2D_191.root
+/storage1/liveraro/ML_Strangeness/Dataset/Raw/LF_LHC24d2b_pass3_Strangeness/AO2D_247.root
+

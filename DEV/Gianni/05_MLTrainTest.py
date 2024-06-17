@@ -33,6 +33,7 @@ from sklearn.preprocessing import binarize
 from xgboost import XGBClassifier
 import xgboost as xgb
 import onnx
+import shap
 from skl2onnx.common.data_types import FloatTensorType
 from onnxmltools.convert import convert_xgboost
 import pickle
@@ -44,8 +45,8 @@ t0 = time.time() # Initial time
 
 ##----------------------- PATHS AND LOADING SETTINGS----------------------------
 MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
-StudyName = "FindableExercise"
-RESULTS_PATH = MAIN_PATH + 'Studies/{}/ML_Runs/'.format(StudyName)
+StudyName = "TrainingGeneralMLModels"
+RESULTS_PATH = MAIN_PATH + 'DEV/Gianni/Studies/{}/ML_Runs/'.format(StudyName)
 
 print('Which ML Run would you like to load?. Available Runs: \n', os.listdir(RESULTS_PATH))
 RunNumber = str (input())
@@ -60,16 +61,20 @@ FeaturesToTrain = RunConfig['Dataset']['Features']
 Class_name = RunConfig['Dataset']['Class']
 
 # Loading train test
-DatasetTrain = pd.read_parquet(MAIN_PATH+'Dataset/Processed/{}_Train.parquet'.format(DatasetName))
+DatasetTrain = pd.read_parquet(MAIN_PATH+'Dataset/Processed/{}/{}_Train.parquet'.format(StudyName, DatasetName))
 X_train = DatasetTrain[FeaturesToTrain]
 y_train = DatasetTrain[[Class_name]]
 #BDtClassweight = len(classes[classes.Class==0])/len(classes[classes.Class==1]) # to balance classes
 
 # Loading test test
-DatasetTest = pd.read_parquet(MAIN_PATH+'Dataset/Processed/{}_Test.parquet'.format(DatasetName))
+DatasetTest = pd.read_parquet(MAIN_PATH+'Dataset/Processed/{}/{}_Test.parquet'.format(StudyName, DatasetName))
 X_test = DatasetTest[FeaturesToTrain]
 y_test = DatasetTest[[Class_name]]
 
+# print('\n Cross check!')
+print("X_train", X_train)
+print("X_test", X_test)
+print("y_test", y_test)
 
 # ##--------------------------------- TRAINING ----------------------------------
 BDT_Classifier = XGBClassifier(**RunConfig['BDT'])
@@ -77,6 +82,7 @@ BDT_Classifier.fit(X_train.values, y_train.values.ravel())
 
 # ##------------------------------- SAVING MODEL --------------------------------
 # Save trained model in JSON format
+print("Saving model....")
 BDT_Classifier.save_model(RUN_PATH+"/{}_BDTModel.json".format(DatasetName))
 
 # Save trained model in ONNX format
@@ -92,6 +98,10 @@ f.close()
 print("Mean Absolute Error (Train sample):", mean_absolute_error(y_train.values.ravel(), BDT_Classifier.predict(X_train)))
 print("Mean Absolute Error (Test sample):", mean_absolute_error(y_test.values.ravel(), BDT_Classifier.predict(X_test)))
 
+# ##-------------------------------FEATURE IMPORTANCE ------------------------------
+explainer = shap.TreeExplainer(BDT_Classifier)
+shap_values = explainer.shap_values(X_test)
+
 # ##--------------------------------- TEST --------------------------------------
 # Predictions:
 PredictionProb = BDT_Classifier.predict_proba(X_test)
@@ -99,6 +109,10 @@ PredictionsDF = pd.DataFrame({'InvMass':DatasetTest['f'+'{}'.format(DatasetName)
 
 # Saving predictions for analysis:
 PredictionsDF.to_parquet(RUN_PATH+"/Predictions.parquet")
+
+SHAP_DF = pd.DataFrame(shap_values, columns=FeaturesToTrain)
+# Saving Feature Importance for analysis:
+SHAP_DF.to_parquet(RUN_PATH+"/SHAPValues.parquet")
 
 # End
 t1 = time.time() - t0

@@ -7,7 +7,7 @@
         "start-value-enumeration": "0",
         "end-value-enumeration": "-1",
         "step-value-enumeration": "1",
-        "aod-file": "@AO2Ds_MLInputListReduced.txt"
+        "aod-file": "@AO2Ds_MLInputListReduced3.txt"
     },
     "lambdakzerospawner": "",
     "lambdakzeropid": {
@@ -26,6 +26,9 @@
         "lutPath": "GLO\/Param\/MatLUT",
         "geoPath": "GLO\/Config\/GeometryAligned",
         "nSigmaPath": "Users\/d\/ddobrigk\/stratof",
+        "mVtxPath": "GLO\/Calib\/MeanVertex",
+        "manualRunNumber": "544122",
+        "manualTimeStamp": "1696549226920",
         "axisEta": {
             "values": [
                 "20",
@@ -223,7 +226,7 @@
             "armPodCut": "5"
         },
         "processEvents": "true",
-        "processDebugCrossCheck": "true",
+        "processDebugCrossCheck": "false",
         "processDebugCrossCheckMC": "false",
         "processV0s": "true"
     },
