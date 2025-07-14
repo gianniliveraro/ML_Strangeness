@@ -1,4 +1,0 @@
-tv__tree = (TTree *)0x7f76488a16b0;
-tv__tree_list->Add(tv__tree);
-tv__tree->Draw("fPDGCodeMother","fPDGCodeMother==3212","", 313988, 0);
-tv__tree->Draw("fPDGCodeMother","fPDGCodeMother==3212 && fPDGCode==22","", 313988, 0);

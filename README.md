@@ -26,11 +26,11 @@ this creates an environment (called "ML_Env") with miniconda to run python codes
 
 ~~~
 ├── Dataset
-│   ├── Processed                          <- processed data for analysis
+│   ├── Processed                          <- processed data for ML analysis
 │   ├── Interim                            <- intermediate datasets
-│   └── Raw                                <- raw AO2D/AR files
+│   └── Raw                                <- raw AO2D/DATA files
 │
-├── Codes                                  <- Basic scripts to perform complete analysis
+├── Codes                                  <- Basic scripts to perform ML analysis
 |
 ├── src                                    <- Installation info and instructions
 │   ├── install_mlenv.sh                   <- script to install ML environment with miniconda
