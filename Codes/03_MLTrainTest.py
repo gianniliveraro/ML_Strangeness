@@ -62,12 +62,12 @@ FeaturesToTrain = RunConfig['Dataset']['Features']
 Class_name = RunConfig['Dataset']['Class']
 
 # Loading train test
-DatasetTrain = pd.read_parquet('{}_Train.parquet'.format(DatasetName))
+DatasetTrain = pd.read_parquet(MAIN_PATH+'Dataset/Processed/{}_Train.parquet'.format(DatasetName))
 X_train = DatasetTrain[FeaturesToTrain]
 y_train = DatasetTrain[[Class_name]]
 
 # Loading test test
-DatasetTest = pd.read_parquet('{}_Test.parquet'.format(DatasetName))
+DatasetTest = pd.read_parquet(MAIN_PATH+'Dataset/Processed/{}_Test.parquet'.format(DatasetName))
 X_test = DatasetTest[FeaturesToTrain]
 y_test = DatasetTest[[Class_name]]
 
