@@ -34,15 +34,15 @@ t0 = time.time() # Initial time
 fSplitTrainTest = True # if true, perform train/test/validation split. If false, the entire input dataset is converted to an unique .parquet file
 
 # Number of signal and bkg candidates in the total dataset (before splitting)
-NSignal = 10000 
-NBkg = 10000 
+NSignal = 50000 
+NBkg = 50000 
 
 ##--------------------------------- PATHS ------------------------------------
 # Change these paths to ones in your own machine!
-MAIN_PATH = '~/ML_Strangeness/'
+MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
 
 ##--------------------------------- DATASET ----------------------------------
-DatasetName = 'AnalysisResults_ExampleTrees' # .root TTree from O2Physics 
+DatasetName = 'AO2D_example' # .root TTree from O2Physics 
 OutputPrefix = "Example"
 Class_name = "fIsCorrectlyAssoc" # Class name (target)
 
@@ -93,7 +93,7 @@ if fSplitTrainTest:
   Data_Train.to_parquet(MAIN_PATH+"Dataset/Processed/{}_Train.parquet".format(OutputPrefix))
   Data_Val.to_parquet(MAIN_PATH+"Dataset/Processed/{}_Val.parquet".format(OutputPrefix))
   Data_Test.to_parquet(MAIN_PATH+"Dataset/Processed/{}_Test.parquet".format(OutputPrefix))
-  #Data_Val.to_csv(MAIN_PATH+"Dataset/Processed/{}_Val.csv".format(OutputPrefix)) # Activate this line if you want to take a look on a .csv file
+  Data_Val.to_csv(MAIN_PATH+"Dataset/Processed/{}_Val.csv".format(OutputPrefix)) # Activate this line if you want to take a look on a .csv file
 
 
   #--------------------------------- END -----------------------------------------

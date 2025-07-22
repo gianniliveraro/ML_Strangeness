@@ -43,7 +43,7 @@ import time
 t0 = time.time() # Initial time
 
 ##----------------------- PATHS AND LOADING SETTINGS----------------------------
-MAIN_PATH = '~/ML_Strangeness/' # Project main directory path
+MAIN_PATH = '/storage1/liveraro/ML_Strangeness/' # Project main directory path
 RESULTS_PATH = MAIN_PATH + 'Results/'
 
 print('Which ML Run would you like to load?. Available Runs: \n', os.listdir(RESULTS_PATH))

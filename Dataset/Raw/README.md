@@ -1,1 +1,1 @@
-Put here your raw data files
+Put here your raw AO2D files 

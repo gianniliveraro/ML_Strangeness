@@ -50,25 +50,25 @@ RunDescription = "Example Run. Hello World!"
 
 ##--------------------------------- PATHS ------------------------------------
 # Change these paths to ones in your own machine!
-MAIN_PATH = '~/ML_Strangeness/'
+MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
 RESULTS_PATH = MAIN_PATH + 'Results/'
 os.makedirs(RESULTS_PATH, exist_ok=True)
 
 ##--------------------------------- DATASET ------------------------------------
 DatasetName = "Example" # Input prefix, "OutputPrefix" in 04_HyperparameterTuning!!
-Class_name =  "fIsCorreclyAssoc" # Target(class).
+Class_name =  "fIsCorrectlyAssoc" # Target(class).
  
 # Define/choose your features!
 FeaturesToTrain = ['fV0PA', 'fV0DCAToPVz', 'fV0NDuplicates']
 
 # Loading Datasets
-Dataset = pd.read_parquet(MAIN_PATH+'{}_Train.parquet'.format(DatasetName))
+Dataset = pd.read_parquet(MAIN_PATH+'Dataset/Processed/{}_Train.parquet'.format(DatasetName))
 Features_DF = Dataset[FeaturesToTrain]
 classes_DF = Dataset[[Class_name]].astype('int32')
 
 print("Features_DF:", Features_DF)
 
-DatasetVal = pd.read_parquet(MAIN_PATH+'{}_Val.parquet'.format(DatasetName))
+DatasetVal = pd.read_parquet(MAIN_PATH+'Dataset/Processed/{}_Val.parquet'.format(DatasetName))
 X_val = DatasetVal[FeaturesToTrain]
 y_val = DatasetVal[[Class_name]]
 

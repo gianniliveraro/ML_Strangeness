@@ -41,7 +41,7 @@ t0 = time.time() # Initial time
 
 ##----------------------- PATHS AND LOADING SETTINGS----------------------------
 # Change these paths to ones in your own machine!
-MAIN_PATH = '~/ML_Strangeness/' # Project main directory path
+MAIN_PATH = '/storage1/liveraro/ML_Strangeness/' # Project main directory path
 RESULTS_PATH = MAIN_PATH + 'Results/'
 
 ##--------------------------- MASTER SWITCHES -----------------------------------

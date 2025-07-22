@@ -27,7 +27,6 @@ this creates an environment (called "ML_Env") with miniconda to run python codes
 ~~~
 ├── Dataset
 │   ├── Processed                          <- processed data for ML analysis
-│   ├── Interim                            <- intermediate datasets
 │   └── Raw                                <- raw AO2D/DATA files
 │
 ├── Codes                                  <- Basic scripts to perform ML analysis
@@ -36,17 +35,8 @@ this creates an environment (called "ML_Env") with miniconda to run python codes
 │   ├── install_mlenv.sh                   <- script to install ML environment with miniconda
 │   └── ML_Env.yml                         <- python packages to be installed 
 │
-├── DEV                                    <- directory to include your dev codes! 
+├── Results                                <- directory that saves your ML runs + results
 │
 └── assets                                 <- media files (images, plots, etc)
 ~~~
-
-
-## Execution workflow (Outdated!!):
-
-This is the Workflow to execute the codes in order to reproduce results: 
-
-<p align="center">
-    <img src="../main/assets/StrangenessMLWorkflow.pptx.png" height="450">
-</p>
 

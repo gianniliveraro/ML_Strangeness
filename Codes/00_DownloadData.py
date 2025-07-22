@@ -41,7 +41,7 @@ OutputDirectoryName = 'LF_LHC24_pass1_ppref_Strangeness_medium' #  Choose the na
 
 ##--------------------------------- PATHS ------------------------------------
 # Change these paths to ones in your own machine!
-MAIN_PATH = '~/ML_Strangeness/'
+MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
 DOWNLOAD_PATH = MAIN_PATH + "Datasets/Raw/{}/".format(OutputDirectoryName)
 
 # Creating directory to save files
