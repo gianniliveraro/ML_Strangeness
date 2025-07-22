@@ -9,10 +9,10 @@
 # granted to it by virtue of its status as an Intergovernmental Organization
 # or submit itself to any jurisdiction.
 #
-# ML training/test code
+# ML Test only code
 # ================
 #
-# This code train and test a BDT model with the best set of hiperparameters
+# This code loads a trained BDT model and tests it with a test set.
 #
 #    Comments, questions, complaints, suggestions?
 #    Please write to:
@@ -33,71 +33,49 @@ from sklearn.preprocessing import binarize
 from xgboost import XGBClassifier
 import xgboost as xgb
 import onnx
-from skl2onnx.common.data_types import FloatTensorType
+import onnxruntime as ort
+from onnxmltools.convert.common.data_types import FloatTensorType
 from onnxmltools.convert import convert_xgboost
 import pickle
 import json
+import joblib
 import time
 t0 = time.time() # Initial time
 
-#---------------------------  MAIN CONFIGURATIONS -----------------------------
-
 ##----------------------- PATHS AND LOADING SETTINGS----------------------------
-MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
-RESULTS_PATH = MAIN_PATH + 'Codes/Results/'
+MAIN_PATH = '~/ML_Strangeness/' # Project main directory path
+RESULTS_PATH = MAIN_PATH + 'Results/'
 
 print('Which ML Run would you like to load?. Available Runs: \n', os.listdir(RESULTS_PATH))
 RunNumber = str (input())
-RUN_PATH = RESULTS_PATH+'{}'.format(RunNumber)
+RUN_PATH = RESULTS_PATH+'Run {}'.format(RunNumber)
 # Loading dict with predictions
 with open(RUN_PATH+"/RunConfig.pkl", 'rb') as f:
     RunConfig = pickle.load(f)
 
 # ##--------------------------------- DATASET ----------------------------------
 DatasetName = RunConfig['Dataset']['DatasetName']
+DatasetTestName = 'AnalysisResults_treesForTest'
 FeaturesToTrain = RunConfig['Dataset']['Features']
 Class_name = RunConfig['Dataset']['Class']
 
-# Loading train test
-DatasetTrain = pd.read_parquet(MAIN_PATH+'Dataset/Processed/{}_Train.parquet'.format(DatasetName))
-X_train = DatasetTrain[FeaturesToTrain]
-y_train = DatasetTrain[[Class_name]]
-#BDtClassweight = len(classes[classes.Class==0])/len(classes[classes.Class==1]) # to balance classes
-
 # Loading test test
-DatasetTest = pd.read_parquet(MAIN_PATH+'Dataset/Processed/{}_Test.parquet'.format(DatasetName))
+DatasetTest = pd.read_parquet('{}.parquet'.format(DatasetTestName))
 X_test = DatasetTest[FeaturesToTrain]
 y_test = DatasetTest[[Class_name]]
 
-
-# ##--------------------------------- TRAINING ----------------------------------
-BDT_Classifier = XGBClassifier(**RunConfig['BDT'])
-BDT_Classifier.fit(X_train.values, y_train.values.ravel())
-
-# ##------------------------------- SAVING MODEL --------------------------------
-# Save trained model in JSON format
-BDT_Classifier.save_model(RUN_PATH+"/{}_BDTModel.json".format(DatasetName))
-
-# Save trained model in ONNX format
-initial_type = [('float_input', FloatTensorType([None, X_train.values.shape[1]]))]
-onnx_model = convert_xgboost(BDT_Classifier, initial_types=initial_type, target_opset=12)
-onnx_model.graph.doc_string = "Converted from XGBoost ver."+xgb.__version__
-onnx.checker.check_model(onnx_model)
-with open(RUN_PATH+'/{}_BDTModel.onnx'.format(DatasetName), "wb") as f:
-    f.write(onnx_model.SerializeToString())
-f.close()
-#exit()
-
-print("Mean Absolute Error (Train sample):", mean_absolute_error(y_train.values.ravel(), BDT_Classifier.predict(X_train)))
-print("Mean Absolute Error (Test sample):", mean_absolute_error(y_test.values.ravel(), BDT_Classifier.predict(X_test)))
+# ##------------------------------- OPENING MODEL --------------------------------
+# Load trained model in JSON format
+BDT_Classifier = xgb.XGBClassifier()
+BDT_Classifier.load_model(RUN_PATH+"/{}_BDTModel.json".format(DatasetName))
 
 # ##--------------------------------- TEST --------------------------------------
 # Predictions:
 PredictionProb = BDT_Classifier.predict_proba(X_test)
-PredictionsDF = pd.DataFrame({'InvMass':DatasetTest['f'+'{}'.format(DatasetName)+'Mass'].values.ravel(), 'Prediction':PredictionProb[:,1], 'GroundTruth':y_test.values.ravel()})
+PredictionsDF = pd.DataFrame({'fV0pt':DatasetTest['fV0pt'].values.ravel(), 'Prediction':PredictionProb[:,1], 'GroundTruth':y_test.values.ravel()})
 
 # Saving predictions for analysis:
-PredictionsDF.to_parquet(RUN_PATH+"/Predictions.parquet")
+PredictionsDF.to_parquet(RUN_PATH+"/Predictions_{}.parquet".format(DatasetTestName))
 
 # End
 t1 = time.time() - t0

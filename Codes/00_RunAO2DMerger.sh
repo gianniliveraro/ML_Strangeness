@@ -1,0 +1,1 @@
+o2-aod-merger --input AO2D_paths.txt --output AO2DMerged.root

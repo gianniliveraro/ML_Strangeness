@@ -35,13 +35,14 @@ t0 = time.time() # Initial time
 VERBOSE_MODE = False
 DRY_MODE_RUNNING = False
 fDOWNLOAD_FILES=True
-TRAIN_ID = 205507 
-OutputDirectoryName = 'LF_LHC23k6e_pass2_Findable' #  Choose the name of the download directory
+fDowloadOnlyAnalysisResults = False # if False, downloads both AnalysisResults and AO2D files.
+TRAIN_ID = 437133 
+OutputDirectoryName = 'LF_LHC24_pass1_ppref_Strangeness_medium' #  Choose the name of the download directory
 
 ##--------------------------------- PATHS ------------------------------------
 # Change these paths to ones in your own machine!
-MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
-DOWNLOAD_PATH = MAIN_PATH + "Dataset/Raw/{}/".format(OutputDirectoryName)
+MAIN_PATH = '~/ML_Strangeness/'
+DOWNLOAD_PATH = MAIN_PATH + "Datasets/Raw/{}/".format(OutputDirectoryName)
 
 # Creating directory to save files
 os.makedirs(DOWNLOAD_PATH, exist_ok=True) 
@@ -82,8 +83,11 @@ def get_AO2D_paths(hyperpath, merge_status):
 def copy_from_alien(alienpathAO2D, alienpathAR, OutputDir, FileNumber):
         cmdAOD = f"alien_cp -q {alienpathAO2D} file:{OutputDir}/AO2D_{FileNumber}.root"
         cmdAR = f"alien_cp -q {alienpathAR} file:{OutputDir}/AnalysisResults_{FileNumber}.root"
-        run_cmd(cmdAOD)
-        run_cmd(cmdAR)
+        if (fDowloadOnlyAnalysisResults):
+            run_cmd(cmdAR)
+        else:
+            run_cmd(cmdAOD)
+            run_cmd(cmdAR)
 
 def get_Output_list(train_id=188604, OutputDir="/.", alien_path="https://alimonitor.cern.ch/alihyperloop-data/trains/train.jsp?train_id=", key_file="userkey.pem", cert_file="usercert.pem"):
     """Gets JSON file to lists main output directories in AliMonitor."""

@@ -9,7 +9,7 @@
 # granted to it by virtue of its status as an Intergovernmental Organization
 # or submit itself to any jurisdiction.
 #
-# 04_UploadModelCCDB
+# 08_UploadModelCCDB
 # ================
 #
 # This script uploads ONNX models to CCDB (run it inside O2Physics environment)
@@ -27,7 +27,7 @@ import ROOT
 sor = 1695750422702
 eor = 1698617337860
 
-onnx_file_name = "Gamma_BDTModel"
+onnx_file_name = "BDTModel"
 onnx_file_path = onnx_file_name+".onnx"
 description = onnx_file_name+"first test!"
 

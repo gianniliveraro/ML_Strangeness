@@ -9,11 +9,10 @@
 # granted to it by virtue of its status as an Intergovernmental Organization
 # or submit itself to any jurisdiction.
 #
-# 03_ProcessData
+# ProcessData
 # ================
 #
-# This code reads a flat TTree and creates training and testing samples for ML
-# TODO: create a validation set!!
+# This code reads a TTree and creates training and testing samples for ML
 #
 #    Comments, questions, complaints, suggestions?
 #    Please write to:
@@ -32,30 +31,35 @@ import time
 t0 = time.time() # Initial time
 
 #---------------------------  MAIN CONFIGURATIONS ----------------------------
-fSplitTrainTest = False # if true, perform train test split. If false, the entire input dataset is converted to .parquet
+fSplitTrainTest = True # if true, perform train/test/validation split. If false, the entire input dataset is converted to an unique .parquet file
 
-# Number of signal and bkg candidates for training/test
-NSignal = 200000
-NBkg = 200000
+# Number of signal and bkg candidates in the total dataset (before splitting)
+NSignal = 10000 
+NBkg = 10000 
 
 ##--------------------------------- PATHS ------------------------------------
 # Change these paths to ones in your own machine!
-MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
-RESULTS_PATH = MAIN_PATH + '/Results/'
+MAIN_PATH = '~/ML_Strangeness/'
 
 ##--------------------------------- DATASET ----------------------------------
-DatasetName = 'MCSigma0GammasTree' # root flat TTree 
-Target = "AntiLambda" # Target particle (class). Options: Lambda, Gamma, KZeroShort, AntiLambda
-Class_name = 'fIs'+Target
+DatasetName = 'AnalysisResults_ExampleTrees' # .root TTree from O2Physics 
+OutputPrefix = "Example"
+Class_name = "fIsCorrectlyAssoc" # Class name (target)
 
 #--------------------------------- LOADING DATA ------------------------------
-rfile = uproot.open(MAIN_PATH+"Dataset/Interim/{}.root".format(DatasetName))
+rfile = uproot.open(MAIN_PATH+"Dataset/Raw/{}.root".format(DatasetName))
 
 # Get the list of directories (TDirectory) in the ROOT file
 keys = rfile.keys()
 directory_names = [x.split(';')[0] for x in keys if "/" not in x ]
 group_names = [x.split(';')[0] for x in keys if "/" in x ]
 Subgroups = np.unique(np.array([x.split('/')[1] for x in group_names]))
+
+print("\n_________________________________________")
+print('[INFO]: The input dataset has {} directories'.format(len(directory_names)))
+print('[INFO]: The input dataset has {} subgroups'.format(len(Subgroups)))
+print('[INFO]: The input dataset has {} groups'.format(len(group_names)))
+print('[INFO]: The input dataset has {} keys'.format(len(keys)))
 
 # Creating Pandas dataframes from TTrees 
 iteraction = 0
@@ -86,18 +90,26 @@ if fSplitTrainTest:
   Data_Train, Data_Val = train_test_split(Data_TrainVal, test_size=0.10, random_state=42, stratify=Data_TrainVal[Class_name])
 
   #----------------------------- SAVING DATASETS ---------------------------------
-  Data_Train.to_parquet(MAIN_PATH+"Dataset/Processed/{}_Train.parquet".format(Target))
-  Data_Val.to_parquet(MAIN_PATH+"Dataset/Processed/{}_Val.parquet".format(Target))
-  Data_Test.to_parquet(MAIN_PATH+"Dataset/Processed/{}_Test.parquet".format(Target))
+  Data_Train.to_parquet(MAIN_PATH+"Dataset/Processed/{}_Train.parquet".format(OutputPrefix))
+  Data_Val.to_parquet(MAIN_PATH+"Dataset/Processed/{}_Val.parquet".format(OutputPrefix))
+  Data_Test.to_parquet(MAIN_PATH+"Dataset/Processed/{}_Test.parquet".format(OutputPrefix))
+  #Data_Val.to_csv(MAIN_PATH+"Dataset/Processed/{}_Val.csv".format(OutputPrefix)) # Activate this line if you want to take a look on a .csv file
 
-  #--------------------------------- END ---------------------------------
+
+  #--------------------------------- END -----------------------------------------
   print("\n-------------------------------------------")
   print('[INFO]: Train set total size: {}'.format(len(Data_Train)))
   print('[INFO]: Val set total size: {}'.format(len(Data_Val)))
   print('[INFO]: Test set total size: {}'.format(len(Data_Test)))
 
 else: 
-  dataframeFinal.to_parquet(MAIN_PATH+"Dataset/Interim/{}.parquet".format(DatasetName))
+
+  print("\n-------------------------------------------")
+  print('[INFO]: The input dataset has a total of {} signal candidates'.format(len(dataframeFinal[dataframeFinal[Class_name]==True])))
+  print('[INFO]: The input dataset has a total of {} Bkg candidates'.format(len(dataframeFinal[dataframeFinal[Class_name]==False])))
+
+  dataframeFinal.to_parquet("{}.parquet".format(DatasetName))
+  dataframeFinal.to_csv("{}.csv".format(DatasetName))
 
 t1 = time.time() - t0
 print("\n_________________________________________")

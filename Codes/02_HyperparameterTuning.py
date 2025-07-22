@@ -14,7 +14,6 @@
 #
 # This code finds the best set of hyperparameters of a BDT model
 #
-# TODO: use a validation set for hyperparameter tuning!!
 #
 #    Comments, questions, complaints, suggestions?
 #    Please write to:
@@ -44,42 +43,36 @@ t0 = time.time() # Initial time
 fUseOptuna = True # if False uses GridSearchCV for hyperparameters search
 fUseOptunawithCV = False # if True uses k-fold cross validation with optuna (it is a little bit slow!)
 fCreateNewrun = True # if True, creates a directory in 'ML_Strangeness/Workflow_Scrips/ML_Analysis/Results/' to save ML run configurations and results 
-NOptunaTrials = 50 # number of Optuna trials
+NOptunaTrials = 10 # number of Optuna trials - modify it according to your needs (and resources)! 
 
 # Please, include a short description of this Run:
-RunDescription = "ML test run for AntiLambdas in MC PbPb"
+RunDescription = "Example Run. Hello World!"
 
 ##--------------------------------- PATHS ------------------------------------
 # Change these paths to ones in your own machine!
-MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
-RESULTS_PATH = MAIN_PATH + 'Codes/Results/'
+MAIN_PATH = '~/ML_Strangeness/'
+RESULTS_PATH = MAIN_PATH + 'Results/'
 os.makedirs(RESULTS_PATH, exist_ok=True)
 
 ##--------------------------------- DATASET ------------------------------------
-Target = "AntiLambda" # Target particle (class). Options: Lambda, Gamma, KZeroShort, AntiLambda 
-DatasetName = Target # csv file
-Class_name = 'fIs'+Target
-
-# Available features (please, do not erase the following list): 
+DatasetName = "Example" # Input prefix, "OutputPrefix" in 04_HyperparameterTuning!!
+Class_name =  "fIsCorreclyAssoc" # Target(class).
  
-## Track Quality: ['fPosITSCls', 'fNegITSCls', 'fPosITSClSize', 'fNegITSClSize', 'fPosTPCRows', 'fNegTPCRows']
-## TPC PID:   ['fPosTPCSigmaPi', 'fNegTPCSigmaPi', 'fPosTPCSigmaPr', 'fNegTPCSigmaPr', 'fPosTPCSigmaEl', 'fNegTPCSigmaEl']
-## TOF PID:   ['fTOFSigmaLaPr', 'fTOFSigmaLaPi', 'fTOFSigmaALaPi', 'fTOFSigmaALaPr', 'fTOFSigmaK0PiPlus', 'fTOFSigmaK0PiMius'] 
-## Kinematic: ['fLambdaMass', 'fAntiLambdaMass', 'fGammaMass', 'fKZeroShortMass', 'fPT', 'fQt', 'fAlpha', 'fPosEta', 'fNegEta', 'fV0Eta'] 
-## Topolocal: ['fZ', 'fV0radius', 'fPA', 'fDCApostopv', 'fDCAnegtopv', 'fDCAV0daughters', 'fDCAv0topv', 'fPsiPair']
-## Auxiliary/MC: ['fV0type', 'fCentrality', 'fSelHypothesis', 'fIsLambda', 'fIsAntiLambda', 'fIsGamma', 'fIsKZeroShort']
-
 # Define/choose your features!
-FeaturesToTrain = ["fV0radius", "fPA", "fDCApostopv", "fDCAnegtopv", "fDCAV0daughters", "fDCAv0topv"]
+FeaturesToTrain = ['fV0PA', 'fV0DCAToPVz', 'fV0NDuplicates']
 
-Dataset = pd.read_parquet(MAIN_PATH+'Dataset/Processed/{}_Train.parquet'.format(DatasetName))
+# Loading Datasets
+Dataset = pd.read_parquet(MAIN_PATH+'{}_Train.parquet'.format(DatasetName))
 Features_DF = Dataset[FeaturesToTrain]
 classes_DF = Dataset[[Class_name]].astype('int32')
 
-# Loading validation set
-DatasetVal = pd.read_parquet(MAIN_PATH+'Dataset/Processed/{}_Val.parquet'.format(DatasetName))
+print("Features_DF:", Features_DF)
+
+DatasetVal = pd.read_parquet(MAIN_PATH+'{}_Val.parquet'.format(DatasetName))
 X_val = DatasetVal[FeaturesToTrain]
 y_val = DatasetVal[[Class_name]]
+
+
 #BDtClassweight = len(classes_DF[classes[Class_name]==0])/len(classes[classes[Class_name]==1]) # activate this if class balancing is necessary
 
 ##--------------------- HYPERPARAMETER SEARCH SPACE ----------------------------
@@ -89,7 +82,7 @@ BDT_params = {'objective':['binary:logistic'],
               'max_depth': [2, 4, 6, 8, 10, 12],
               'n_estimators': [10, 50, 100, 200, 300, 400, 500],
               'random_state' :[42]
-              #'scale_pos_weight' :[BDtClassweight]
+              #'scale_pos_weight' :[BDtClassweight] # activate this if class balancing is necessary
 }
 
 def objective(trial): # Optuna search space
@@ -143,7 +136,7 @@ if fUseOptuna:
     BDT_params = study.best_params
 
 else:
-    BDT_Classifier = XGBClassifier()
+    BDT_Classifier = XGBClassifier(n_jobs=16)
     CV_BDT = GridSearchCV(estimator=BDT_Classifier, param_grid=BDT_params, cv= 5, scoring='roc_auc', verbose=2)
     CV_BDT.fit(Features_DF.iloc[:, :].values, classes_DF.iloc[:, :].values.ravel())
     BDT_params = CV_BDT.best_params_ # BDT
@@ -167,7 +160,7 @@ RunConfig_dict["BDT"] = BDT_params
 
 if fCreateNewrun:
     RunNumber = len(next(os.walk(RESULTS_PATH))[1])
-    RUN_PATH = RESULTS_PATH+'ML Run {}'.format(RunNumber)
+    RUN_PATH = RESULTS_PATH+'Run {}'.format(RunNumber)
     os.makedirs(RUN_PATH, exist_ok=True)
     file = open(RUN_PATH+"/README.txt", "w")
     file.write('Description: ' + RunDescription + '\n \n')
@@ -187,4 +180,4 @@ if fCreateNewrun:
         if len(data) > 0 :
             file_object.write("\n")
         # Append text at the end of file
-        file_object.write("ML Run {}: {}".format(RunNumber, RunDescription))
+        file_object.write("Run {}: {}".format(RunNumber, RunDescription))

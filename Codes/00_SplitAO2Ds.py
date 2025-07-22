@@ -9,12 +9,14 @@
 # granted to it by virtue of its status as an Intergovernmental Organization
 # or submit itself to any jurisdiction.
 #
-# 01_SplitAO2Ds
+# SplitAO2Ds
 # ================
 #
 # This is a simple script to split the AO2D files between those:
 # 1. used exclusively to ML Training/Test workflow
 # 2. used exclusively to ML inference inside O2Physics
+#
+# !! In principle, this is meant to be used specially if you download several AO2Ds from Grid !!
 #
 #    Comments, questions, complaints, suggestions?
 #    Please write to:
@@ -42,7 +44,7 @@ output_file_2 = "AO2Ds_O2InputList.txt" # List for O2 workflow
 ##--------------------------------- PATHS ------------------------------------
 # Change these paths to ones in your own machine!
 DatasetDirectory = "LF_LHC23k6e_pass2_Strangeness"
-MAIN_PATH = '/storage1/liveraro/ML_Strangeness/'
+MAIN_PATH = '~/ML_Strangeness/'
 DATA_PATH = MAIN_PATH + "Dataset/Raw/{}/".format(DatasetDirectory)
 
 #---------------------------- HELPER FUNCTIONS ----------------------------
