@@ -28,7 +28,7 @@ import numpy as np
 import os
 import sklearn
 from sklearn.model_selection import train_test_split, RepeatedStratifiedKFold, GridSearchCV
-from sklearn.metrics import confusion_matrix, accuracy_score, mean_absolute_error, roc_curve, precision_recall_curve, roc_auc_score
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, accuracy_score, mean_absolute_error, roc_curve, precision_recall_curve, roc_auc_score
 from sklearn.preprocessing import binarize
 import pickle
 import json
@@ -45,8 +45,11 @@ MAIN_PATH = '/storage1/liveraro/ML_Strangeness/' # Project main directory path
 RESULTS_PATH = MAIN_PATH + 'Results/'
 
 ##--------------------------- MASTER SWITCHES -----------------------------------
-fPlotSHAP = False # if True, plots SHAP values
-fPlotAUCVspT = False  # if True, plots AUC Vs pT 
+fPlotSHAP = True # if True, plots SHAP values
+fPlotAUCVspT = True  # if True, plots AUC Vs pT 
+fPlotConfusionMatrix = True # if True, plots confusion matrix vs pT
+BestThreshold = 0.5
+
 fUseAnotherTestDataset = False # if True, uses another test dataset (not the one used in the training). If False, uses the same test dataset used in the training.
 DatasetTestName = '_AnalysisResults_treesForTest' 
 
@@ -152,6 +155,35 @@ if fPlotSHAP:
 
     plt.show()
     plt.clf() 
+
+
+# -----------------------------------
+# Confusion matrix per pT 
+if fPlotConfusionMatrix:
+    pT_bins = [0.0, 0.5, 1., 2., 4., 15.]
+
+    for i in range(len(pT_bins)-1):
+        pT_min = pT_bins[i]
+        pT_max = pT_bins[i+1]
+        
+        # Filter predictions for the current pT bin
+        
+        PredictionsDF_pT_bin = PredictionsDF[(PredictionsDF['fXiccPt'] >= pT_min) & (PredictionsDF['fXiccPt'] < pT_max)]
+        PredictionsDF_pT_bin["Classification"] = 0
+        PredictionsDF_pT_bin["Classification"][PredictionsDF_pT_bin.Prediction>= BestThreshold] = 1
+
+        cm = confusion_matrix(PredictionsDF_pT_bin['GroundTruth'].values.ravel(), PredictionsDF_pT_bin["Classification"].values.ravel())
+        cm_percent = cm.astype('float') / cm.sum() * 100
+        cm_percent = np.round(cm_percent, 2)
+        
+        #disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=["Bkg", "Signal"])
+        disp = ConfusionMatrixDisplay(confusion_matrix=cm)
+        disp.plot(cmap=plt.cm.Blues)
+        plt.title('Confusion Matrix, {} < pT < {}, Threshold {}'.format(pT_min, pT_max, BestThreshold))
+
+        plt.savefig(RUN_PATH+"/ConfusionMatrix_{}-{}.png".format(pT_min, pT_max), bbox_inches='tight', dpi=300)
+        plt.clf()
+
 
 
 #--------------------------------------
