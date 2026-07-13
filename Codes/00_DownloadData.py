@@ -33,11 +33,17 @@ t0 = time.time() # Initial time
 #---------------------------  MAIN CONFIGURATIONS ----------------------------
 # Global Variables
 VERBOSE_MODE = False
-DRY_MODE_RUNNING = False
-fDOWNLOAD_FILES=True
-fDowloadOnlyAnalysisResults = False # if False, downloads both AnalysisResults and AO2D files.
-TRAIN_ID = 437133 
-OutputDirectoryName = 'LF_LHC24_pass1_ppref_Strangeness_medium' #  Choose the name of the download directory
+fDowloadAnalysisResults = True # if 
+fDowloadAO2D = True
+fOpenExistingTxtFile = False
+fDownloadFiles = True
+
+TRAIN_ID = 684161
+fSetMaxNumberOfRuns = False
+MaxNumberOfRunNumbers = 250 
+NumberOfJobs = 36
+
+OutputDirectoryName = 'AO2Ds' #  Choose the name of the download directory
 
 ##--------------------------------- PATHS ------------------------------------
 # Change these paths to ones in your own machine!
@@ -80,15 +86,6 @@ def get_AO2D_paths(hyperpath, merge_status):
     AR_paths = find_paths(cmdAnalysisResults)
     return AOD_paths, AR_paths 
 
-def copy_from_alien(alienpathAO2D, alienpathAR, OutputDir, FileNumber):
-        cmdAOD = f"alien_cp -q {alienpathAO2D} file:{OutputDir}/AO2D_{FileNumber}.root"
-        cmdAR = f"alien_cp -q {alienpathAR} file:{OutputDir}/AnalysisResults_{FileNumber}.root"
-        if (fDowloadOnlyAnalysisResults):
-            run_cmd(cmdAR)
-        else:
-            run_cmd(cmdAOD)
-            run_cmd(cmdAR)
-
 def get_Output_list(train_id=188604, OutputDir="/.", alien_path="https://alimonitor.cern.ch/alihyperloop-data/trains/train.jsp?train_id=", key_file="userkey.pem", cert_file="usercert.pem"):
     """Gets JSON file to lists main output directories in AliMonitor."""
     out_name = os.path.join(OutputDir, f"HyperloopID_{train_id}.json")
@@ -112,45 +109,81 @@ def get_Output_list(train_id=188604, OutputDir="/.", alien_path="https://alimoni
 #--------------------------------  EXECUTION ----------------------------
 def main():
     # Get hyperloop jobs path:
-    HY_PATH, MERGE_STATE, RUN_NUMBER = get_Output_list(train_id=TRAIN_ID, OutputDir=DOWNLOAD_PATH)
+    HY_PATH, MERGE_STATE, RUN_NUMBER = get_Output_list(train_id=TRAIN_ID, OutputDir=DOWNLOAD_PATH, key_file=key_file, cert_file=cert_file)
     
     with open(DOWNLOAD_PATH+'RunNumbers.txt', 'w') as file:
-            for run in RUN_NUMBER:
-                file.write(str(run)+"\n")
-            file.close()
-    
-    # Loop to count and list files only
-    JOB_Counter = 0
-    Ao2DFileList = []
-    ARFileList = []
-    for i in HY_PATH:
-        # Get paths of AO2D files
-        Merge_Status = MERGE_STATE[JOB_Counter]
-        ao2d_paths, ar_paths = get_AO2D_paths(i, Merge_Status)
-        Ao2DFileList.extend(ao2d_paths)
-        ARFileList.extend(ar_paths)
-        JOB_Counter = JOB_Counter + 1
-    NTotalAO2Ds = len(Ao2DFileList)
+        for run in RUN_NUMBER:
+            file.write(str(run)+"\n")
+        file.close()
 
-    # Loop to download files
-    if fDOWNLOAD_FILES:
-        JOB_Counter = 0
-        FILE_Counter = 0
-        OutputPATHS = []
-        
-        for i in HY_PATH:
+    # Loop to count and list files only
+    if not fOpenExistingTxtFile:
+        JOB_Counter = 0    
+        Ao2DFileList = []
+        ARFileList = []
+        print("------ Starting searching for files ------  \n")
+        for counter, i in enumerate(HY_PATH):
+            if fSetMaxNumberOfRuns and (counter == MaxNumberOfRunNumbers):
+                break
             # Get paths of AO2D files
             Merge_Status = MERGE_STATE[JOB_Counter]
             ao2d_paths, ar_paths = get_AO2D_paths(i, Merge_Status)
-            PATH_Counter = 0
-            for j in ao2d_paths:
-                copy_from_alien(j, ar_paths[PATH_Counter], DOWNLOAD_PATH, FILE_Counter)
-                OutputPATHS.append(str(DOWNLOAD_PATH)+"AO2D_{}.root".format(FILE_Counter))
-                PATH_Counter = PATH_Counter+1
-                FILE_Counter = FILE_Counter + 1
-                print('\r FILE {} out {}'.format(FILE_Counter, NTotalAO2Ds), end="")
+            Ao2DFileList.extend(ao2d_paths)
+            ARFileList.extend(ar_paths)
+            JOB_Counter = JOB_Counter + 1
+            print('\r FILE {} processed'.format(counter), end="")
 
-        # Write the file paths to the text file
+        print("\n ------ Ending searching for files ------  \n")
+        NTotalAO2Ds = len(Ao2DFileList)
+
+        print("Ao2DFileList", Ao2DFileList)
+
+        print("Outer length:", len(Ao2DFileList))
+        print("Inner length:", len(Ao2DFileList[0]))
+        print("Datatype of elements:", type(Ao2DFileList[0]))
+
+
+        # Loop to download files
+        
+        JOB_Counter = 0
+        FILE_Counter = 0
+        OutputPATHS = []
+        with open(DOWNLOAD_PATH+"hashedAO2D_input_output.txt", "w") as fout, \
+             open(DOWNLOAD_PATH+"hashedAR_input_output.txt", "w") as fout2, \
+             open(DOWNLOAD_PATH+"hashedAO2D+AR_input_output.txt", "w") as fout3:
+            
+            for counter, (ao2d_path, ar_path) in enumerate(zip(Ao2DFileList, ARFileList)):
+                print("ao2d_path", ao2d_path)
+
+                fout.write("{} file:{}AO2D_{}.root\n".format(ao2d_path, DOWNLOAD_PATH, counter))
+                fout2.write("{} file:{}AnalysisResults_{}.root\n".format(ar_path, DOWNLOAD_PATH, counter))
+
+                fout3.write("{} file:{}AO2D_{}.root\n".format(ao2d_path, DOWNLOAD_PATH, counter))
+                fout3.write("{} file:{}AnalysisResults_{}.root\n".format(ar_path, DOWNLOAD_PATH, counter))
+
+                OutputPATHS.append(f"{DOWNLOAD_PATH}AO2D_{counter}.root")
+                FILE_Counter += 1
+            
+            JOB_Counter += 1
+
+    else:
+        print("------ We don't need to search for files ------  \n")
+                    
+
+    # Download files
+    print("------ Start downloading ------  \n")
+
+    if fDownloadFiles:
+        if fDowloadAO2D and fDowloadAnalysisResults:
+            subprocess.run(["alien.py", "cp", "-T", str(NumberOfJobs), "-input", DOWNLOAD_PATH+"hashedAO2D+AR_input_output.txt"], check=True)
+            
+        else:
+            if fDowloadAO2D: subprocess.run(["alien.py", "cp", "-T", str(NumberOfJobs), "-input", DOWNLOAD_PATH+"hashedAO2D_input_output.txt"], check=True)
+            if fDowloadAnalysisResults: subprocess.run(["alien.py", "cp", "-T", str(NumberOfJobs), "-input", DOWNLOAD_PATH+"hashedAR_input_output.txt"], check=True)
+
+
+    # Write the file paths to the text file
+    if fDowloadAO2D:
         with open(DOWNLOAD_PATH+'input.txt', 'w') as file:
             for path in OutputPATHS:
                 file.write(str(path)+"\n")
@@ -165,5 +198,4 @@ def main():
 
 if __name__ == "__main__":
     main()
-
 
