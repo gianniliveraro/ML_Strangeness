@@ -31,9 +31,9 @@ import time
 t0 = time.time() # Initial time
 
 #---------------------------  MAIN CONFIGURATIONS ----------------------------
-fSplitTrainTest = False # if true, perform train/test/validation split. 
+fSplitTrainTest = True   # if true, perform train/test/validation split. 
 fSeparateAO2Ds = False   # else if true, merge signal and bacgkround ao2ds, then perform perform train/test/validation split
-                        # else, the entire input dataset is converted to an unique .parquet file
+                         # else, the entire input dataset is converted to an unique .parquet file
 
 # Number of signal and bkg candidates in the total dataset (before splitting)
 NSignal = 100000
